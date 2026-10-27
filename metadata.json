@@ -1,0 +1,6 @@
+{
+  "name": "Ob-havo ma'lumoti — Toshkent",
+  "description": "Toshkent va dunyo shaharlari uchun real vaqt va vaqt mintaqasi bo'yicha jonli quyosh chiqishi/botishi, yomg'ir, qor, shamol animatsiyalari va suyuq shisha dizaynidagi ob-havo platformasi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

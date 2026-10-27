@@ -1,0 +1,4526 @@
+<!doctype html>
+<html lang="uz">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Ob-havo ma'lumoti — Toshkent</title>
+    <meta name="description" content="Toshkent va dunyo shaharlari uchun real vaqt va vaqt mintaqasi bo'yicha jonli quyosh chiqishi/botishi, yomg'ir, qor, shamol animatsiyalari va suyuq shisha dizaynidagi ob-havo platformasi." />
+    <meta property="og:title" content="Ob-havo ma'lumoti — Toshkent" />
+    <meta property="og:description" content="Toshkent va dunyo shaharlari uchun real vaqt va vaqt mintaqasi bo'yicha jonli quyosh chiqishi/botishi, yomg'ir, qor, shamol animatsiyalari va suyuq shisha dizaynidagi ob-havo platformasi." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Google Fonts Inter + Inter Tight -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+      :root {
+        --u: min(100vw / 1357, 100dvh / 871);
+        --ink: #ffffff;
+        --glass: rgba(255, 255, 255, 0.155);
+        --glass-line: rgba(255, 255, 255, 0.22);
+        --glass-strong: rgba(255, 255, 255, 0.28);
+        --e-out: cubic-bezier(.16, 1, .3, 1);
+        --e-soft: cubic-bezier(.22, .61, .36, 1);
+        --e-pen: cubic-bezier(.37, .01, .2, 1);
+      }
+      @supports not (height: 100dvh) {
+        :root { --u: min(100vw / 1357, 100vh / 871); }
+      }
+
+      *, *::before, *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html, body {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background-color: #04121b;
+        color: var(--ink);
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        font-feature-settings: "kern" 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Stage & Living Weather System */
+      .stage {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        background-color: #04121b;
+        background: radial-gradient(circle at var(--light-x, 50%) var(--light-y, 30%), rgba(255, 255, 255, 0.22) 0%, transparent 70%), var(--bg-sky-gradient, linear-gradient(180deg, #1d72f3 0%, #3b82f6 35%, #60a5fa 70%, #93c5fd 100%));
+        transition: filter 1s ease;
+      }
+
+      .stage.is-day-stage {
+        background: var(--bg-sky-gradient, linear-gradient(180deg, #1d72f3 0%, #3b82f6 35%, #60a5fa 70%, #93c5fd 100%));
+      }
+      .stage.is-dawn-stage {
+        background: var(--bg-sky-gradient, linear-gradient(180deg, #1e1b4b 0%, #7c2d12 30%, #ea580c 60%, #fde047 100%));
+      }
+      .stage.is-sunset-stage {
+        background: var(--bg-sky-gradient, linear-gradient(180deg, #0f172a 0%, #581c87 35%, #c026d3 65%, #fb923c 100%));
+      }
+      .stage.is-dusk-stage {
+        background: var(--bg-sky-gradient, linear-gradient(180deg, #090d16 0%, #1e1b4b 40%, #312e81 80%, #1e293b 100%));
+      }
+      .stage.is-night-stage {
+        background: var(--bg-sky-gradient, linear-gradient(180deg, #020a14 0%, #051322 50%, #081d32 100%));
+      }
+
+      /* Weather-Specific Overrides for Atmosphere */
+      .stage.is-storm {
+        background: linear-gradient(180deg, #070b12 0%, #111a28 40%, #1e293b 75%, #334155 100%) !important;
+      }
+      .stage.is-rainy {
+        background: linear-gradient(180deg, #111923 0%, #1c2734 40%, #2e3e50 75%, #475569 100%) !important;
+      }
+      .stage.is-snowy {
+        background: linear-gradient(180deg, #182230 0%, #2c3b4e 45%, #506680 80%, #7e9bb5 100%) !important;
+      }
+      .stage.is-cloudy {
+        background: linear-gradient(180deg, #1e293b 0%, #334155 40%, #4b5d73 75%, #64748b 100%) !important;
+      }
+
+      .bg-layer {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center 25%;
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 1.1s cubic-bezier(0.4, 0, 0.2, 1), filter 1s ease, background-image 1.1s ease;
+        pointer-events: none;
+        z-index: 1;
+      }
+      .bg-layer.active {
+        opacity: 1;
+      }
+
+      .bg-dynamic-photo {
+        background-size: cover;
+        background-position: center 30%;
+        filter: brightness(0.78) saturate(1.12);
+        z-index: 1;
+      }
+
+      .bg-sunny {
+        background-image: url("https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?auto=format&fit=crop&w=1920&q=80");
+      }
+      .bg-storm {
+        background-image: url("https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?auto=format&fit=crop&w=1920&q=80");
+      }
+      .bg-cloudy {
+        background-image: url("https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=80");
+      }
+      .bg-rain {
+        background-image: url("https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&w=1920&q=80");
+      }
+      .bg-night {
+        background-image: url("https://images.unsplash.com/photo-1509773896068-7fd415d91e2e?auto=format&fit=crop&w=1920&q=80");
+        filter: brightness(0.42) saturate(1.2) hue-rotate(205deg);
+      }
+      .bg-snow {
+        background-image: url("https://images.unsplash.com/photo-1491002052546-bf38f186af56?auto=format&fit=crop&w=1920&q=80");
+      }
+
+      /* Atmospheric Weather Filters */
+      .stage.is-rainy .bg-dynamic-photo,
+      .stage.is-storm .bg-dynamic-photo {
+        filter: brightness(0.65) contrast(1.1);
+      }
+      .stage.is-snowy .bg-dynamic-photo {
+        filter: brightness(0.9) hue-rotate(15deg) saturate(0.8);
+      }
+      .stage.is-sunny .bg-dynamic-photo {
+        filter: brightness(1.1) saturate(1.2);
+      }
+      .stage.is-cloudy .bg-dynamic-photo {
+        filter: brightness(0.8) contrast(0.95);
+      }
+      .stage.is-foggy .bg-dynamic-photo {
+        filter: brightness(0.8) contrast(0.85) saturate(0.7) blur(1.5px);
+      }
+
+      /* Drifting Volumetric Fog Layer Overlay */
+      .fog-layer {
+        display: none;
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        background: linear-gradient(180deg, rgba(200, 220, 235, 0.28) 0%, rgba(180, 205, 225, 0.42) 50%, rgba(160, 190, 215, 0.2) 100%);
+        backdrop-filter: blur(2px);
+        animation: driftFog 20s ease-in-out infinite alternate;
+      }
+      .stage.is-foggy .fog-layer {
+        display: block;
+      }
+      @keyframes driftFog {
+        0% { transform: scale(1) translateX(0); opacity: 0.6; }
+        50% { transform: scale(1.05) translateX(-20px); opacity: 0.85; }
+        100% { transform: scale(1) translateX(20px); opacity: 0.6; }
+      }
+
+      /* Dynamic Sun Glow Radial Gradient Overlay */
+      .sun-glow {
+        display: none;
+        position: absolute;
+        top: -100px;
+        right: -100px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(255,223,128,0.35) 0%, transparent 70%);
+        filter: blur(40px);
+        pointer-events: none;
+        z-index: 2;
+        transition: opacity 1s ease;
+      }
+      .stage.is-sunny .sun-glow {
+        display: block;
+      }
+
+      /* Time Phase Atmospheric Color Overlay */
+      .time-phase-tint {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 2;
+        transition: background 1.2s ease, opacity 1s ease;
+      }
+      .phase-dawn {
+        background: linear-gradient(180deg, rgba(255, 110, 64, 0.28) 0%, rgba(255, 193, 7, 0.16) 45%, rgba(3, 169, 244, 0.1) 100%);
+      }
+      .phase-day {
+        background: transparent;
+      }
+      .phase-cloudy {
+        background: linear-gradient(180deg, rgba(80, 100, 125, 0.48) 0%, rgba(55, 75, 95, 0.38) 100%);
+      }
+      .phase-sunset {
+        background: linear-gradient(180deg, rgba(230, 81, 0, 0.35) 0%, rgba(216, 27, 96, 0.24) 40%, rgba(26, 35, 126, 0.2) 100%);
+      }
+      .phase-dusk {
+        background: linear-gradient(180deg, rgba(74, 20, 140, 0.38) 0%, rgba(26, 35, 126, 0.42) 60%, rgba(5, 15, 25, 0.5) 100%);
+      }
+      .phase-night {
+        background: linear-gradient(180deg, rgba(2, 10, 20, 0.55) 0%, rgba(3, 15, 26, 0.65) 100%);
+      }
+
+      /* Living Weather & Sun Animation Canvas */
+      .weather-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .stage-vignette {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        z-index: 4;
+        background-image:
+          linear-gradient(105deg, rgba(4,16,24,.38) 0%, rgba(4,16,24,.22) 40%, rgba(4,16,24,.08) 78%, transparent 100%),
+          linear-gradient(180deg, rgba(4,16,24,.18) 0%, transparent 25%),
+          linear-gradient(0deg, rgba(4,16,24,.14), rgba(4,16,24,.14));
+      }
+
+      /* Left Sidebar */
+      .sidebar {
+        position: absolute;
+        left: calc(16 * var(--u));
+        top: calc(14 * var(--u));
+        bottom: calc(14 * var(--u));
+        width: calc(72 * var(--u));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: calc(20 * var(--u));
+        padding-bottom: calc(30 * var(--u));
+        background: linear-gradient(180deg,
+          rgba(255,255,255,.13) 0%,
+          rgba(255,255,255,.14) 14%,
+          rgba(255,255,255,.10) 38%,
+          rgba(255,255,255,.09) 100%);
+        backdrop-filter: blur(calc(18 * var(--u))) saturate(115%);
+        -webkit-backdrop-filter: blur(calc(18 * var(--u))) saturate(115%);
+        border-radius: calc(26 * var(--u));
+        border: 1px solid var(--glass-line);
+        box-shadow: 0 calc(12 * var(--u)) calc(32 * var(--u)) rgba(0,0,0,.28);
+        z-index: 20;
+        animation: slideL .92s var(--e-out) .05s both;
+      }
+
+      .sidebar .pip {
+        position: absolute;
+        left: calc(-2 * var(--u));
+        top: calc(126 * var(--u));
+        width: calc(5 * var(--u));
+        height: calc(29 * var(--u));
+        border-radius: calc(3 * var(--u));
+        background: #ffffff;
+        box-shadow: 0 0 calc(10 * var(--u)) rgba(255,255,255,.65);
+        transform-origin: center;
+        transition: top 0.35s var(--e-out);
+        animation: growY .50s var(--e-out) .68s both;
+      }
+
+      .logo-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(44 * var(--u));
+        height: calc(44 * var(--u));
+        text-decoration: none;
+        cursor: pointer;
+        animation: popIn .70s var(--e-out) .26s both;
+        background: transparent;
+        border: none;
+      }
+      .logo-link:hover {
+        transform: scale(1.06);
+      }
+
+      .sidebar .nav {
+        margin-top: calc(46 * var(--u));
+        display: flex;
+        flex-direction: column;
+        gap: calc(34 * var(--u));
+        align-items: center;
+      }
+
+      .sidebar .nav button,
+      .sidebar .logout {
+        background: none;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        opacity: 0.82;
+        cursor: pointer;
+        transition: opacity 0.2s var(--e-out), transform 0.2s var(--e-out);
+        animation: riseIn .60s var(--e-out) both;
+        padding: 0;
+        width: calc(42 * var(--u));
+        height: calc(42 * var(--u));
+        border-radius: calc(12 * var(--u));
+      }
+
+      .sidebar .nav button:nth-child(1) { animation-delay: .36s; opacity: 1; }
+      .sidebar .nav button:nth-child(2) { animation-delay: .41s; }
+      .sidebar .nav button:nth-child(3) { animation-delay: .46s; }
+      .sidebar .nav button:nth-child(4) { animation-delay: .51s; }
+      .sidebar .nav button:nth-child(5) { animation-delay: .56s; }
+
+      .sidebar .nav button:hover,
+      .sidebar .logout:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.12);
+        transform: translateY(calc(-1 * var(--u)));
+      }
+
+      .sidebar .nav button.active {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .sidebar .logout {
+        margin-top: auto;
+        animation: riseIn .60s var(--e-out) .70s both;
+      }
+
+      .icon-nav {
+        width: calc(23 * var(--u));
+        height: calc(23 * var(--u));
+        fill: currentColor;
+      }
+
+      /* Header */
+      .header {
+        position: absolute;
+        top: calc(18 * var(--u));
+        left: calc(112 * var(--u));
+        right: calc(38 * var(--u));
+        height: calc(52 * var(--u));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 50;
+      }
+
+      .header .user-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .header-live-time-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(6 * var(--u));
+        font-size: calc(12.5 * var(--u));
+        font-weight: 600;
+        color: rgba(255,255,255,.92);
+        background: rgba(4, 18, 27, 0.45);
+        backdrop-filter: blur(calc(12 * var(--u)));
+        padding: calc(3 * var(--u)) calc(10 * var(--u));
+        border-radius: calc(12 * var(--u));
+        border: 1px solid var(--glass-line);
+        margin-bottom: calc(4 * var(--u));
+        width: fit-content;
+      }
+
+      .live-dot {
+        width: calc(7 * var(--u));
+        height: calc(7 * var(--u));
+        border-radius: 50%;
+        background: #00e676;
+        box-shadow: 0 0 calc(6 * var(--u)) #00e676;
+        animation: pulseLive 2s infinite ease-in-out;
+      }
+      @keyframes pulseLive {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.85); }
+      }
+
+      .header .who {
+        font-size: calc(19 * var(--u));
+        font-weight: 700;
+        letter-spacing: calc(-0.35 * var(--u));
+        line-height: 1;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: calc(8 * var(--u));
+      }
+
+      .header .tools {
+        display: flex;
+        align-items: center;
+        gap: calc(12 * var(--u));
+        position: relative;
+      }
+
+      .tool {
+        width: calc(48 * var(--u));
+        height: calc(48 * var(--u));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255,255,255,.16);
+        backdrop-filter: blur(calc(16 * var(--u))) saturate(115%);
+        -webkit-backdrop-filter: blur(calc(16 * var(--u))) saturate(115%);
+        border: 1px solid var(--glass-line);
+        color: #ffffff;
+        cursor: pointer;
+        transition: background-color 0.2s var(--e-out), transform 0.2s var(--e-out), border-color 0.2s;
+        animation: popIn .58s var(--e-out) both;
+        position: relative;
+      }
+
+      .tool:hover {
+        background: rgba(255,255,255,.26);
+        border-color: rgba(255,255,255,.45);
+        transform: translateY(calc(-1 * var(--u)));
+      }
+
+      .tool .badge {
+        position: absolute;
+        top: calc(8 * var(--u));
+        right: calc(8 * var(--u));
+        width: calc(8 * var(--u));
+        height: calc(8 * var(--u));
+        background: #00e676;
+        border-radius: 50%;
+        box-shadow: 0 0 calc(8 * var(--u)) #00e676;
+      }
+
+      .tool .icon {
+        width: calc(20 * var(--u));
+        height: calc(20 * var(--u));
+        fill: currentColor;
+      }
+
+      .avatar-wrap {
+        width: calc(48 * var(--u));
+        height: calc(48 * var(--u));
+        border-radius: 50%;
+        overflow: hidden;
+        position: relative;
+        background: rgba(4,16,24,.4);
+        backdrop-filter: blur(calc(16 * var(--u))) saturate(115%);
+        -webkit-backdrop-filter: blur(calc(16 * var(--u))) saturate(115%);
+        border: 1px solid var(--glass-line);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        animation: popIn .58s var(--e-out) .495s both;
+        transition: transform 0.2s var(--e-out), border-color 0.2s;
+      }
+      .avatar-wrap:hover {
+        transform: scale(1.05);
+        border-color: rgba(255,255,255,.5);
+      }
+
+      .avatar-wrap img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        z-index: 1;
+      }
+
+      .avatar-wrap .avatar-fallback {
+        width: calc(28 * var(--u));
+        height: calc(28 * var(--u));
+        fill: #ffffff;
+        position: absolute;
+        z-index: 0;
+      }
+
+      /* Main View Panel & Inline Views (No detached floating popups) */
+      .main-view-panel {
+        position: absolute;
+        left: calc(112 * var(--u));
+        top: calc(84 * var(--u));
+        width: calc(560 * var(--u));
+        height: calc(410 * var(--u));
+        z-index: 10;
+        overflow: hidden;
+      }
+
+      .inline-view {
+        display: none;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+        box-sizing: border-box;
+        scrollbar-width: none;
+      }
+      .inline-view::-webkit-scrollbar {
+        display: none;
+      }
+      .inline-view.active-view {
+        display: flex;
+        flex-direction: column;
+        animation: fadeInView 0.32s var(--e-out) both;
+      }
+
+      /* Dashboard View is transparent on top of the stage photo */
+      #view-dashboard.inline-view {
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+      }
+
+      /* Non-dashboard inline views (Settings, Reports, Search, Explore, Calendar) get a solid semi-opaque glass container */
+      .inline-view:not(#view-dashboard) {
+        background: linear-gradient(180deg, rgba(8, 24, 38, 0.94) 0%, rgba(4, 18, 27, 0.97) 100%);
+        backdrop-filter: blur(calc(28 * var(--u))) saturate(125%);
+        -webkit-backdrop-filter: blur(calc(28 * var(--u))) saturate(125%);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: calc(22 * var(--u));
+        padding: calc(18 * var(--u));
+        box-shadow: 0 calc(16 * var(--u)) calc(44 * var(--u)) rgba(0, 0, 0, 0.55);
+        color: #ffffff;
+      }
+
+      @keyframes fadeInView {
+        from { opacity: 0; transform: translateY(calc(10 * var(--u))); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .inline-view-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: calc(14 * var(--u));
+        padding-bottom: calc(10 * var(--u));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+      }
+      .inline-view-title {
+        font-size: calc(19 * var(--u));
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--u));
+      }
+      .btn-back-dashboard {
+        background: rgba(255, 255, 255, 0.14);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        color: #ffffff;
+        padding: calc(5 * var(--u)) calc(12 * var(--u));
+        border-radius: calc(12 * var(--u));
+        font-size: calc(12.5 * var(--u));
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+      }
+      .btn-back-dashboard:hover {
+        background: rgba(255, 255, 255, 0.26);
+        border-color: rgba(255, 255, 255, 0.45);
+        transform: translateY(calc(-1 * var(--u)));
+      }
+
+      /* Hero Section (Dashboard View) - Daytime on Top, Evening Underneath */
+      .hero {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .hero-top-row {
+        display: flex;
+        align-items: center;
+        gap: calc(10 * var(--u));
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        height: calc(32 * var(--u));
+        border-radius: calc(16 * var(--u));
+        padding: 0 calc(14 * var(--u));
+        background: rgba(255,255,255,.175);
+        backdrop-filter: blur(calc(16 * var(--u))) saturate(115%);
+        -webkit-backdrop-filter: blur(calc(16 * var(--u))) saturate(115%);
+        border: 1px solid var(--glass-line);
+        font-size: calc(13.5 * var(--u));
+        font-weight: 600;
+        color: #ffffff;
+        letter-spacing: calc(0.1 * var(--u));
+        position: relative;
+        overflow: hidden;
+        animation: wipeRight .80s var(--e-out) .44s both;
+        cursor: pointer;
+        transition: background 0.2s, border-color 0.2s;
+      }
+      .chip:hover {
+        background: rgba(255,255,255,.26);
+        border-color: rgba(255,255,255,.45);
+      }
+
+      /* Real-Time Celestial Phase Indicator */
+      .phase-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+        height: calc(32 * var(--u));
+        border-radius: calc(16 * var(--u));
+        padding: 0 calc(12 * var(--u));
+        background: rgba(4, 18, 27, 0.48);
+        backdrop-filter: blur(calc(14 * var(--u)));
+        border: 1px solid var(--glass-line);
+        font-size: calc(12.5 * var(--u));
+        font-weight: 600;
+        color: #ffffff;
+      }
+
+      .hero h1 {
+        font-family: 'Inter Tight', 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: calc(44 * var(--u));
+        line-height: calc(52 * var(--u));
+        letter-spacing: calc(.15 * var(--u));
+        margin: calc(10 * var(--u)) 0 calc(8 * var(--u));
+        color: #ffffff;
+        transition: opacity 0.3s;
+      }
+
+      .ln {
+        display: block;
+        overflow: hidden;
+      }
+
+      .ln span {
+        display: block;
+        animation: lineUp 1.05s var(--e-out) both;
+      }
+
+      .hero .blurb {
+        max-width: calc(490 * var(--u));
+        font-size: calc(14 * var(--u));
+        line-height: calc(20.5 * var(--u));
+        font-weight: 500;
+        letter-spacing: calc(-0.25 * var(--u));
+        color: rgba(255,255,255,.94);
+        margin-bottom: calc(12 * var(--u));
+        transition: opacity 0.3s;
+        white-space: pre-line;
+      }
+
+      /* Dedicated Evening / Night Weather Card - Directly UNDER Daytime info */
+      .evening-card {
+        background: linear-gradient(180deg, rgba(20, 36, 52, 0.58) 0%, rgba(10, 24, 36, 0.70) 100%);
+        backdrop-filter: blur(calc(20 * var(--u))) saturate(120%);
+        -webkit-backdrop-filter: blur(calc(20 * var(--u))) saturate(120%);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: calc(18 * var(--u));
+        padding: calc(12 * var(--u)) calc(16 * var(--u));
+        max-width: calc(500 * var(--u));
+        box-shadow: 0 calc(8 * var(--u)) calc(24 * var(--u)) rgba(0,0,0,.25);
+        animation: wipeDown .90s var(--e-soft) .95s both;
+      }
+
+      .evening-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: calc(4 * var(--u));
+      }
+
+      .evening-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+        font-size: calc(13 * var(--u));
+        font-weight: 700;
+        color: #90caf9;
+      }
+
+      .evening-temp-pill {
+        font-size: calc(18 * var(--u));
+        font-weight: 700;
+        color: #ffffff;
+        background: rgba(255,255,255,.14);
+        padding: calc(2 * var(--u)) calc(8 * var(--u));
+        border-radius: calc(10 * var(--u));
+        border: 1px solid rgba(255,255,255,.2);
+      }
+
+      .evening-blurb {
+        font-size: calc(13 * var(--u));
+        line-height: calc(18 * var(--u));
+        color: rgba(255,255,255,.88);
+        font-weight: 500;
+      }
+
+      /* Hero Live Weather Metrics Strip (Humidity, Wind Speed, Pressure) */
+      .hero-metrics-strip {
+        display: flex;
+        align-items: center;
+        gap: calc(8 * var(--u));
+        margin-top: calc(10 * var(--u));
+        max-width: calc(500 * var(--u));
+        flex-wrap: wrap;
+        animation: wipeDown .90s var(--e-soft) 1.05s both;
+      }
+
+      .hero-metric-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+        padding: calc(6 * var(--u)) calc(12 * var(--u));
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(calc(12 * var(--u)));
+        -webkit-backdrop-filter: blur(calc(12 * var(--u)));
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        border-radius: calc(14 * var(--u));
+        font-size: calc(12.5 * var(--u));
+        color: rgba(255, 255, 255, 0.95);
+        transition: background 0.2s ease, transform 0.2s ease;
+      }
+
+      .hero-metric-chip:hover {
+        background: rgba(255, 255, 255, 0.22);
+        transform: translateY(-1px);
+      }
+
+      .hero-metric-icon {
+        width: calc(14 * var(--u));
+        height: calc(14 * var(--u));
+        fill: currentColor;
+        color: #90caf9;
+      }
+
+      .hero-metric-label {
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 500;
+      }
+
+      .hero-metric-val {
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      /* Forecast Strip - 2 DISTINCT ROWS (Day on top, Night beneath) */
+      .forecast {
+        position: absolute;
+        left: calc(112 * var(--u));
+        right: calc(376 * var(--u));
+        bottom: calc(24 * var(--u));
+        z-index: 10;
+      }
+
+      .temps-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        padding: 0 calc(6 * var(--u));
+      }
+
+      .temp-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: riseIn .60s var(--e-out) both;
+        cursor: pointer;
+        padding: calc(8 * var(--u)) calc(12 * var(--u));
+        border-radius: calc(18 * var(--u));
+        transition: all 0.25s var(--e-out);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        min-width: calc(86 * var(--u));
+        backdrop-filter: blur(calc(12 * var(--u)));
+        -webkit-backdrop-filter: blur(calc(12 * var(--u)));
+      }
+
+      .temp-col:hover {
+        background: rgba(255, 255, 255, 0.18);
+        transform: translateY(calc(-3 * var(--u)));
+        border-color: rgba(255, 255, 255, 0.45);
+        box-shadow: 0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(0,0,0,.3);
+      }
+
+      .temp-col.active {
+        background: rgba(255, 255, 255, 0.26);
+        border: 1.5px solid rgba(255, 255, 255, 0.75);
+        box-shadow: 0 0 calc(16 * var(--u)) rgba(255, 255, 255, 0.35), 0 calc(8 * var(--u)) calc(22 * var(--u)) rgba(0,0,0,.35);
+        transform: translateY(calc(-2 * var(--u)));
+      }
+
+      /* Row 1: Kunduzgi (Daytime) Ob-havo Tier Button */
+      .temp-day-tier {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        background: transparent;
+        border: 1.5px solid transparent;
+        border-radius: calc(12 * var(--u));
+        padding: calc(5 * var(--u)) calc(6 * var(--u));
+        cursor: pointer;
+        transition: all 0.22s var(--e-out);
+      }
+      .temp-day-tier:hover {
+        background: rgba(255, 255, 255, 0.16);
+      }
+      .temp-day-tier.active-tier {
+        background: rgba(255, 235, 59, 0.22);
+        border-color: rgba(255, 235, 59, 0.85);
+        box-shadow: 0 0 calc(12 * var(--u)) rgba(255, 235, 59, 0.4);
+      }
+
+      .temp-tier-tag-day {
+        font-size: calc(9.5 * var(--u));
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        color: rgba(255, 255, 255, 0.95);
+        text-transform: uppercase;
+        margin-bottom: calc(2 * var(--u));
+      }
+
+      .temp-day-val-box {
+        display: flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+      }
+
+      .temp-val-day {
+        font-size: calc(21 * var(--u));
+        font-weight: 700;
+        letter-spacing: calc(-0.4 * var(--u));
+        line-height: 1;
+        color: #ffffff;
+      }
+
+      .temp-icon {
+        width: calc(20 * var(--u));
+        height: calc(20 * var(--u));
+        fill: #ffeb3b;
+      }
+
+      /* Divider between Day and Night */
+      .temp-tier-divider {
+        width: 100%;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.22);
+        margin: calc(4 * var(--u)) 0;
+      }
+
+      /* Row 2: Kechki / Tungi Ob-havo Tier Button */
+      .temp-night-tier {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        background: transparent;
+        border: 1.5px solid transparent;
+        border-radius: calc(12 * var(--u));
+        padding: calc(5 * var(--u)) calc(6 * var(--u));
+        cursor: pointer;
+        transition: all 0.22s var(--e-out);
+      }
+      .temp-night-tier:hover {
+        background: rgba(144, 202, 249, 0.16);
+      }
+      .temp-night-tier.active-tier {
+        background: rgba(144, 202, 249, 0.22);
+        border-color: rgba(144, 202, 249, 0.85);
+        box-shadow: 0 0 calc(12 * var(--u)) rgba(144, 202, 249, 0.4);
+      }
+
+      .temp-tier-tag-night {
+        font-size: calc(9.5 * var(--u));
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        color: #90caf9;
+        text-transform: uppercase;
+        margin-bottom: calc(2 * var(--u));
+      }
+
+      .temp-night-val-box {
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--u));
+      }
+
+      .temp-val-night {
+        font-size: calc(15 * var(--u));
+        font-weight: 700;
+        color: #90caf9;
+        line-height: 1;
+      }
+
+      .temp-night-icon {
+        width: calc(14 * var(--u));
+        height: calc(14 * var(--u));
+        fill: #90caf9;
+      }
+
+      /* Forecast Card Micro-Indicators (Humidity % & Wind Speed km/h) */
+      .temp-card-metrics {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: calc(4 * var(--u));
+        margin-top: calc(5 * var(--u));
+        width: 100%;
+      }
+
+      .metric-micro-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(3 * var(--u));
+        padding: calc(2 * var(--u)) calc(5 * var(--u));
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: calc(6 * var(--u));
+        font-size: calc(10 * var(--u));
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(calc(8 * var(--u)));
+        white-space: nowrap;
+        line-height: 1;
+      }
+
+      .metric-micro-chip.chip-humidity {
+        color: #90caf9;
+      }
+
+      .metric-micro-chip.chip-wind {
+        color: #a7f3d0;
+      }
+
+      .metric-micro-icon {
+        width: calc(10 * var(--u));
+        height: calc(10 * var(--u));
+        flex-shrink: 0;
+        fill: currentColor;
+      }
+
+      .wave-svg {
+        width: 100%;
+        height: calc(165 * var(--u));
+        margin-top: calc(18 * var(--u));
+        display: block;
+        overflow: visible;
+      }
+
+      .wline {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+        animation: drawLine 1.60s var(--e-pen) 1.50s both;
+        transition: d 0.5s ease-out;
+      }
+
+      @keyframes drawLine {
+        from { stroke-dashoffset: 1; }
+        to { stroke-dashoffset: 0; }
+      }
+
+      #wclipr {
+        transform-origin: 0 0;
+        animation: wipeX 1.42s var(--e-pen) 1.65s both;
+      }
+
+      @keyframes wipeX {
+        from { transform: scaleX(0); width: 0; }
+        to { transform: scaleX(1); width: 835px; }
+      }
+
+      .days-row {
+        margin-top: calc(-24 * var(--u));
+        display: flex;
+        justify-content: space-between;
+        padding: 0 calc(10 * var(--u));
+      }
+
+      .day-label {
+        font-size: calc(15 * var(--u));
+        font-weight: 500;
+        color: rgba(255,255,255,.78);
+        animation: riseIn .55s var(--e-out) both;
+        min-width: calc(75 * var(--u));
+        text-align: center;
+        cursor: pointer;
+        padding: calc(4 * var(--u)) calc(8 * var(--u));
+        border-radius: calc(10 * var(--u));
+        transition: color 0.2s, transform 0.2s;
+        border: none;
+        background: none;
+      }
+
+      .day-label:hover {
+        color: #ffffff;
+        transform: translateY(calc(-1 * var(--u)));
+      }
+
+      .day-label.on {
+        color: #ffffff;
+        font-weight: 700;
+        text-shadow: 0 0 calc(12 * var(--u)) rgba(255,255,255,.7);
+      }
+
+      /* Right Rail Cards - Contained and scrollable without collision */
+      .rail {
+        position: absolute;
+        right: calc(38 * var(--u));
+        top: calc(86 * var(--u));
+        bottom: calc(26 * var(--u));
+        width: calc(316 * var(--u));
+        display: flex;
+        flex-direction: column;
+        gap: calc(12 * var(--u));
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: calc(2 * var(--u)) calc(4 * var(--u)) calc(12 * var(--u)) calc(4 * var(--u));
+        scrollbar-width: none;
+        z-index: 10;
+      }
+      .rail::-webkit-scrollbar {
+        display: none;
+      }
+
+      .card {
+        background: linear-gradient(180deg,
+          rgba(255,255,255,.21) 0%,
+          rgba(255,255,255,.26) 24%,
+          rgba(255,255,255,.25) 78%,
+          rgba(255,255,255,.23) 100%);
+        backdrop-filter: blur(calc(26 * var(--u))) saturate(118%);
+        -webkit-backdrop-filter: blur(calc(26 * var(--u))) saturate(118%);
+        border: 1px solid var(--glass-line);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 calc(14 * var(--u)) calc(34 * var(--u)) rgba(0,0,0,.24);
+        cursor: pointer;
+        transition: transform 0.25s var(--e-out), border-color 0.25s, box-shadow 0.25s;
+        flex-shrink: 0;
+      }
+
+      .card:hover {
+        transform: translateY(calc(-2 * var(--u)));
+        border-color: rgba(255,255,255,.45);
+        box-shadow: 0 calc(18 * var(--u)) calc(40 * var(--u)) rgba(0,0,0,.34);
+      }
+
+      .card.active-card {
+        border-color: rgba(255,255,255,.65);
+        box-shadow: 0 0 calc(20 * var(--u)) rgba(255,255,255,.22), 0 calc(14 * var(--u)) calc(34 * var(--u)) rgba(0,0,0,.24);
+      }
+
+      .card.big {
+        border-radius: calc(24 * var(--u));
+        padding: calc(18 * var(--u)) calc(22 * var(--u));
+        min-height: calc(230 * var(--u));
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        animation: slideR .95s var(--e-out) .80s both;
+      }
+
+      .card.row {
+        border-radius: calc(20 * var(--u));
+        padding: calc(12 * var(--u)) calc(18 * var(--u));
+        min-height: calc(96 * var(--u));
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .sheen::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 38%;
+        height: 100%;
+        background: linear-gradient(100deg, transparent 0%, rgba(255,255,255,.18) 50%, transparent 100%);
+        transform: translate3d(-150%, 0, 0) skewX(-18deg);
+        animation: sheen 1.15s var(--e-soft) infinite;
+        animation-duration: 2s;
+        pointer-events: none;
+      }
+
+      @keyframes sheen {
+        from { transform: translate3d(-150%,0,0) skewX(-18deg); }
+        to   { transform: translate3d(260%,0,0) skewX(-18deg); }
+      }
+
+      .place-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .place-name {
+        font-size: calc(19 * var(--u));
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .place-pin {
+        width: calc(18 * var(--u));
+        height: calc(18 * var(--u));
+        fill: #ffffff;
+      }
+
+      .big-temp-wrap {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        margin: calc(6 * var(--u)) 0 calc(8 * var(--u));
+      }
+
+      .big-temp {
+        font-size: calc(68 * var(--u));
+        font-weight: 700;
+        letter-spacing: calc(-3.5 * var(--u));
+        line-height: 0.95;
+        color: #ffffff;
+        cursor: pointer;
+        display: inline-block;
+      }
+
+      .big-temp i {
+        font-style: normal;
+        font-size: calc(28 * var(--u));
+        font-weight: 400;
+        vertical-align: top;
+        margin-left: calc(3 * var(--u));
+        opacity: 0.9;
+        text-decoration: underline;
+        text-decoration-style: dotted;
+      }
+
+      .dual-temp-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: calc(3 * var(--u));
+        background: rgba(0, 0, 0, 0.22);
+        padding: calc(6 * var(--u)) calc(10 * var(--u));
+        border-radius: calc(12 * var(--u));
+        border: 1px solid rgba(255,255,255,.16);
+      }
+      .dual-temp-item {
+        font-size: calc(12 * var(--u));
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+      }
+      .dual-temp-day {
+        color: #fff;
+      }
+      .dual-temp-night {
+        color: #90caf9;
+      }
+
+      /* Sun / Moon Arc Position Mini Meter */
+      .sun-arc-meter {
+        background: rgba(0, 0, 0, 0.20);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: calc(12 * var(--u));
+        padding: calc(6 * var(--u)) calc(10 * var(--u));
+        margin-bottom: calc(8 * var(--u));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: calc(11.5 * var(--u));
+        font-weight: 600;
+      }
+
+      /* 1:1 Astronomical Sun & Moon Orbit Tracking Module */
+      .astro-module-card {
+        background: linear-gradient(180deg,
+          rgba(4, 18, 27, 0.90) 0%,
+          rgba(6, 24, 36, 0.84) 48%,
+          rgba(4, 18, 27, 0.94) 100%) !important;
+        backdrop-filter: blur(calc(28 * var(--u))) saturate(125%);
+        -webkit-backdrop-filter: blur(calc(28 * var(--u))) saturate(125%);
+        border: 1px solid rgba(255, 255, 255, 0.22) !important;
+        border-radius: calc(22 * var(--u));
+        padding: calc(14 * var(--u)) calc(16 * var(--u));
+        box-shadow: 0 calc(14 * var(--u)) calc(36 * var(--u)) rgba(0, 0, 0, 0.44),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        display: flex;
+        flex-direction: column;
+        gap: calc(10 * var(--u));
+        margin-top: calc(2 * var(--u));
+        position: relative;
+        overflow: hidden;
+      }
+      .astro-header {
+        display: flex;
+        flex-direction: column;
+        gap: calc(2 * var(--u));
+      }
+      .astro-badge-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: calc(10.5 * var(--u));
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      .astro-live-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+        color: #81d4fa;
+        text-transform: uppercase;
+      }
+      .astro-live-dot {
+        width: calc(6 * var(--u));
+        height: calc(6 * var(--u));
+        border-radius: 50%;
+        background: #00e676;
+        box-shadow: 0 0 calc(8 * var(--u)) #00e676;
+        animation: astroLivePulse 2s infinite ease-in-out;
+      }
+      @keyframes astroLivePulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(0.85); }
+      }
+      .astro-city-coords {
+        color: rgba(255, 255, 255, 0.75);
+        font-family: monospace;
+        font-size: calc(10.5 * var(--u));
+        background: rgba(255,255,255,0.1);
+        padding: calc(2 * var(--u)) calc(6 * var(--u));
+        border-radius: calc(6 * var(--u));
+      }
+      .astro-title {
+        font-size: calc(16 * var(--u));
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .astro-status-sub {
+        font-size: calc(11.5 * var(--u));
+        color: rgba(255, 255, 255, 0.85);
+        display: flex;
+        align-items: center;
+        gap: calc(4 * var(--u));
+      }
+      .astro-arc-container {
+        width: 100%;
+        position: relative;
+        padding: calc(4 * var(--u)) 0;
+      }
+      .astro-svg {
+        width: 100%;
+        height: auto;
+        display: block;
+        overflow: visible;
+      }
+      .astro-cardinal-text {
+        font-size: 9px;
+        fill: rgba(255, 255, 255, 0.65);
+        font-weight: 600;
+      }
+      .celestial-body-group {
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform;
+      }
+      .sun-pulse-ring {
+        animation: sunHaloPulse 2.8s ease-in-out infinite alternate;
+        transform-origin: center;
+      }
+      @keyframes sunHaloPulse {
+        0% { transform: scale(0.92); opacity: 0.55; }
+        100% { transform: scale(1.15); opacity: 0.95; }
+      }
+      .astro-metrics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: calc(6 * var(--u));
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        padding-top: calc(8 * var(--u));
+      }
+      .astro-metric-cell {
+        background: rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: calc(10 * var(--u));
+        padding: calc(6 * var(--u)) calc(8 * var(--u));
+        display: flex;
+        flex-direction: column;
+        gap: calc(1 * var(--u));
+      }
+      .astro-metric-label {
+        font-size: calc(10.5 * var(--u));
+        color: rgba(255, 255, 255, 0.72);
+        font-weight: 500;
+      }
+      .astro-metric-value {
+        font-size: calc(14.5 * var(--u));
+        font-weight: 700;
+        color: #ffffff;
+      }
+      .astro-metric-sub {
+        font-size: calc(10 * var(--u));
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .astro-angles-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.24);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: calc(6 * var(--u)) calc(10 * var(--u));
+        border-radius: calc(10 * var(--u));
+        font-size: calc(11 * var(--u));
+        color: rgba(255, 255, 255, 0.82);
+      }
+      .astro-angles-bar b {
+        color: #ffd54f;
+      }
+
+
+      .metrics-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid rgba(255,255,255,.18);
+        padding-top: calc(10 * var(--u));
+      }
+
+      .metric-item {
+        display: flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+        font-size: calc(13 * var(--u));
+        font-weight: 500;
+        color: #ffffff;
+      }
+
+      .metric-icon {
+        width: calc(16 * var(--u));
+        height: calc(16 * var(--u));
+        fill: currentColor;
+      }
+
+      .row-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+
+      .row-country {
+        font-size: calc(11.5 * var(--u));
+        font-weight: 500;
+        color: rgba(255,255,255,.75);
+      }
+
+      .row-local-time {
+        font-size: calc(11.5 * var(--u));
+        font-weight: 600;
+        color: #a5d6a7;
+      }
+
+      .row-main {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: calc(3 * var(--u)) 0;
+      }
+
+      .row-city {
+        font-size: calc(16 * var(--u));
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .row-day-temp {
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--u));
+        font-size: calc(22 * var(--u));
+        font-weight: 700;
+        color: #ffffff;
+      }
+
+      .row-sub-night {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: calc(12 * var(--u));
+        color: rgba(255,255,255,.82);
+        border-top: 1px solid rgba(255,255,255,.14);
+        padding-top: calc(4 * var(--u));
+      }
+
+      .row-night-tag {
+        color: #90caf9;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: calc(4 * var(--u));
+      }
+
+      /* Liquid Glass Modals & Dialogs */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(2, 10, 16, 0.82);
+        backdrop-filter: blur(calc(18 * var(--u)));
+        -webkit-backdrop-filter: blur(calc(18 * var(--u)));
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 200;
+        opacity: 0;
+        transition: opacity 0.25s ease-out;
+      }
+      .modal-backdrop.open {
+        display: flex;
+        opacity: 1;
+      }
+
+      .glass-modal {
+        background: linear-gradient(180deg,
+          rgba(10, 28, 42, 0.96) 0%,
+          rgba(6, 20, 32, 0.98) 100%);
+        backdrop-filter: blur(calc(36 * var(--u))) saturate(130%);
+        -webkit-backdrop-filter: blur(calc(36 * var(--u))) saturate(130%);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: calc(26 * var(--u));
+        box-shadow: 0 calc(24 * var(--u)) calc(64 * var(--u)) rgba(0, 0, 0, 0.65);
+        color: #ffffff;
+        max-width: calc(560 * var(--u));
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: calc(26 * var(--u));
+        position: relative;
+        transform: scale(0.92);
+        transition: transform 0.25s var(--e-out);
+      }
+      .modal-backdrop.open .glass-modal {
+        transform: scale(1);
+      }
+
+      .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: calc(18 * var(--u));
+        border-bottom: 1px solid rgba(255,255,255,.18);
+        padding-bottom: calc(12 * var(--u));
+      }
+      .modal-title {
+        font-size: calc(21 * var(--u));
+        font-weight: 700;
+        letter-spacing: -0.3px;
+      }
+      .modal-close {
+        background: rgba(255,255,255,.15);
+        border: 1px solid rgba(255,255,255,.22);
+        color: #fff;
+        width: calc(36 * var(--u));
+        height: calc(36 * var(--u));
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+      }
+      .modal-close:hover {
+        background: rgba(255,255,255,.32);
+        transform: scale(1.05);
+      }
+
+      /* Notification Popover */
+      .popover {
+        position: absolute;
+        top: calc(64 * var(--u));
+        right: 0;
+        width: calc(360 * var(--u));
+        background: linear-gradient(180deg, rgba(8, 26, 38, 0.96) 0%, rgba(4, 16, 25, 0.98) 100%);
+        backdrop-filter: blur(calc(28 * var(--u))) saturate(125%);
+        -webkit-backdrop-filter: blur(calc(28 * var(--u))) saturate(125%);
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: calc(22 * var(--u));
+        padding: calc(18 * var(--u));
+        box-shadow: 0 calc(20 * var(--u)) calc(50 * var(--u)) rgba(0,0,0,.60);
+        display: none;
+        z-index: 100;
+      }
+      .popover.open {
+        display: block;
+        animation: riseIn 0.3s var(--e-out) both;
+      }
+
+      .notif-item {
+        padding: calc(11 * var(--u)) 0;
+        border-bottom: 1px solid rgba(255,255,255,.12);
+        font-size: calc(13 * var(--u));
+        line-height: 1.4;
+      }
+      .notif-item:last-child {
+        border-bottom: none;
+      }
+      .notif-title {
+        font-weight: 700;
+        margin-bottom: calc(3 * var(--u));
+        display: flex;
+        align-items: center;
+        gap: calc(6 * var(--u));
+      }
+
+      /* Search overlay & Instant Autocomplete */
+      .search-input-wrap {
+        position: relative;
+        margin-bottom: calc(14 * var(--u));
+      }
+      .search-input {
+        width: 100%;
+        background: rgba(255,255,255,.14);
+        border: 1px solid rgba(255,255,255,.32);
+        border-radius: calc(16 * var(--u));
+        padding: calc(14 * var(--u)) calc(16 * var(--u)) calc(14 * var(--u)) calc(44 * var(--u));
+        color: #fff;
+        font-size: calc(16 * var(--u));
+        outline: none;
+        transition: border-color 0.2s, background 0.2s;
+      }
+      .search-input:focus {
+        border-color: #fff;
+        background: rgba(255,255,255,.22);
+      }
+      .search-icon-inside {
+        position: absolute;
+        left: calc(16 * var(--u));
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(20 * var(--u));
+        height: calc(20 * var(--u));
+        fill: rgba(255,255,255,.75);
+      }
+
+      .autocomplete-list {
+        display: flex;
+        flex-direction: column;
+        gap: calc(6 * var(--u));
+        max-height: calc(260 * var(--u));
+        overflow-y: auto;
+        margin-bottom: calc(16 * var(--u));
+        padding-right: calc(4 * var(--u));
+      }
+
+      .rec-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: calc(11 * var(--u)) calc(14 * var(--u));
+        background: rgba(255,255,255,.12);
+        border: 1px solid rgba(255,255,255,.18);
+        border-radius: calc(14 * var(--u));
+        cursor: pointer;
+        transition: background 0.2s, transform 0.15s, border-color 0.2s;
+      }
+      .rec-item:hover {
+        background: rgba(255,255,255,.24);
+        border-color: rgba(255,255,255,.45);
+        transform: translateX(calc(2 * var(--u)));
+      }
+      .rec-city-name {
+        font-weight: 700;
+        font-size: calc(15 * var(--u));
+      }
+      .rec-city-name mark {
+        background: rgba(255, 235, 59, 0.4);
+        color: #ffffff;
+        font-weight: 800;
+        padding: 0 calc(2 * var(--u));
+        border-radius: calc(3 * var(--u));
+      }
+      .rec-region {
+        font-size: calc(12 * var(--u));
+        color: rgba(255,255,255,.75);
+      }
+      .rec-right {
+        display: flex;
+        align-items: center;
+        gap: calc(10 * var(--u));
+      }
+      .rec-temp {
+        font-size: calc(16 * var(--u));
+        font-weight: 700;
+      }
+      .rec-icon {
+        width: calc(20 * var(--u));
+        height: calc(20 * var(--u));
+        fill: #fff;
+      }
+
+      .city-chip-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: calc(8 * var(--u));
+        margin-top: calc(8 * var(--u));
+      }
+      .city-chip {
+        background: rgba(255,255,255,.15);
+        border: 1px solid rgba(255,255,255,.22);
+        border-radius: calc(14 * var(--u));
+        padding: calc(7 * var(--u)) calc(13 * var(--u));
+        font-size: calc(13 * var(--u));
+        font-weight: 500;
+        color: #fff;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: calc(5 * var(--u));
+      }
+      .city-chip:hover {
+        background: rgba(255,255,255,.28);
+        border-color: rgba(255,255,255,.45);
+        transform: translateY(calc(-1 * var(--u)));
+      }
+
+      /* Keyframes */
+      @keyframes riseIn {
+        from { opacity: 0; transform: translateY(var(--ry, 14px)); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes slideL {
+        from { opacity: 0; transform: translateX(-26px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      @keyframes slideR {
+        from { opacity: 0; transform: translateX(30px) scale(0.985); }
+        to { opacity: 1; transform: translateX(0) scale(1); }
+      }
+      @keyframes popIn {
+        from { opacity: 0; transform: scale(0.7); }
+        to { opacity: 1; transform: scale(1); }
+      }
+      @keyframes growY {
+        from { opacity: 0; transform: scaleY(0); }
+        to { opacity: 1; transform: scaleY(1); }
+      }
+      @keyframes lineUp {
+        from { transform: translateY(115%); }
+        to { transform: translateY(0); }
+      }
+      @keyframes wipeRight {
+        from { opacity: 0; clip-path: inset(0 100% 0 0); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); }
+      }
+      @keyframes wipeDown {
+        from { opacity: 0; clip-path: inset(0 0 100% 0); }
+        to { opacity: 1; clip-path: inset(0 0 0 0); }
+      }
+
+      /* Mobile reflow <= 860px */
+      @media (max-width: 860px) {
+        :root {
+          --u: min(calc(100vw / 430), 1.1px);
+        }
+        html, body {
+          overflow-y: auto !important;
+          height: auto !important;
+          min-height: 100%;
+        }
+        .stage {
+          position: relative !important;
+          inset: auto !important;
+          min-height: 100vh;
+          overflow-y: visible !important;
+          overflow-x: hidden !important;
+          display: flex !important;
+          flex-direction: column !important;
+          padding-bottom: calc(100 * var(--u)) !important;
+        }
+        .bg-layer, .weather-canvas, .time-phase-tint, .stage-vignette {
+          position: fixed !important;
+          inset: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          pointer-events: none !important;
+        }
+        .sidebar {
+          position: fixed !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          top: auto !important;
+          width: 100% !important;
+          height: calc(64 * var(--u)) !important;
+          flex-direction: row !important;
+          justify-content: space-around !important;
+          padding: 0 calc(16 * var(--u)) !important;
+          border-radius: calc(20 * var(--u)) calc(20 * var(--u)) 0 0 !important;
+          z-index: 100 !important;
+          background: rgba(4, 18, 27, 0.95) !important;
+          backdrop-filter: blur(calc(24 * var(--u))) saturate(120%) !important;
+          -webkit-backdrop-filter: blur(calc(24 * var(--u))) saturate(120%) !important;
+          animation: riseIn .6s var(--e-out) .1s both !important;
+        }
+        .sidebar .pip,
+        .sidebar .logo-link {
+          display: none !important;
+        }
+        .sidebar .nav {
+          margin-top: 0 !important;
+          flex-direction: row !important;
+          gap: calc(20 * var(--u)) !important;
+          align-items: center !important;
+        }
+        .sidebar .logout {
+          margin-top: 0 !important;
+          display: flex !important;
+          align-items: center !important;
+        }
+        .header {
+          position: relative !important;
+          top: auto !important;
+          left: auto !important;
+          right: auto !important;
+          height: auto !important;
+          padding: calc(14 * var(--u)) calc(14 * var(--u)) !important;
+          order: 1 !important;
+          flex-wrap: wrap !important;
+          gap: calc(8 * var(--u)) !important;
+          z-index: 20 !important;
+        }
+        .header-tools {
+          width: 100% !important;
+          justify-content: flex-end !important;
+          gap: calc(8 * var(--u)) !important;
+        }
+
+        /* Crucial: Flow Main View Panel in Normal Flex Document Flow Without Absolute Hover */
+        .main-view-panel {
+          position: relative !important;
+          left: auto !important;
+          top: auto !important;
+          right: auto !important;
+          bottom: auto !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          height: auto !important;
+          min-height: auto !important;
+          max-height: none !important;
+          overflow: visible !important;
+          order: 2 !important;
+          margin: 0 !important;
+          padding: 0 calc(14 * var(--u)) !important;
+          z-index: 10 !important;
+        }
+        .inline-view {
+          height: auto !important;
+          min-height: auto !important;
+          max-height: none !important;
+          overflow: visible !important;
+          width: 100% !important;
+          padding: 0 !important;
+        }
+        .inline-view:not(#view-dashboard) {
+          max-height: 80vh !important;
+          overflow-y: auto !important;
+          padding: calc(16 * var(--u)) !important;
+          margin-bottom: calc(14 * var(--u)) !important;
+          border-radius: calc(20 * var(--u)) !important;
+        }
+        .hero {
+          position: relative !important;
+          top: auto !important;
+          left: auto !important;
+          width: 100% !important;
+          max-width: 100% !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
+        .hero h1 {
+          font-size: clamp(22px, 6.5vw, 34px) !important;
+          line-height: 1.2 !important;
+          margin: calc(6 * var(--u)) 0 !important;
+        }
+        .hero .blurb {
+          font-size: calc(13 * var(--u)) !important;
+          line-height: 1.45 !important;
+          width: 100% !important;
+          max-width: 100% !important;
+        }
+        .evening-card {
+          width: 100% !important;
+          max-width: 100% !important;
+          padding: calc(10 * var(--u)) calc(12 * var(--u)) !important;
+          margin-top: calc(10 * var(--u)) !important;
+        }
+        .rail {
+          position: relative !important;
+          top: auto !important;
+          right: auto !important;
+          bottom: auto !important;
+          left: auto !important;
+          width: 100% !important;
+          padding: 0 calc(14 * var(--u)) !important;
+          margin-top: calc(14 * var(--u)) !important;
+          display: flex !important;
+          flex-direction: column !important;
+          gap: calc(12 * var(--u)) !important;
+          order: 3 !important;
+          overflow: visible !important;
+          z-index: 10 !important;
+          animation: riseIn .8s var(--e-out) .3s both !important;
+        }
+        .card {
+          animation-name: riseIn !important;
+          width: 100% !important;
+        }
+        .forecast {
+          position: relative !important;
+          left: auto !important;
+          right: auto !important;
+          top: auto !important;
+          bottom: auto !important;
+          padding: 0 calc(14 * var(--u)) !important;
+          margin-top: calc(16 * var(--u)) !important;
+          margin-bottom: calc(24 * var(--u)) !important;
+          order: 4 !important;
+          width: 100% !important;
+          z-index: 10 !important;
+        }
+        .temps-row {
+          overflow-x: auto !important;
+          gap: calc(8 * var(--u)) !important;
+          padding-bottom: calc(6 * var(--u)) !important;
+          scrollbar-width: none !important;
+          -webkit-overflow-scrolling: touch !important;
+        }
+        .temps-row::-webkit-scrollbar {
+          display: none !important;
+        }
+        .temp-col {
+          min-width: calc(76 * var(--u)) !important;
+          flex-shrink: 0 !important;
+        }
+        .days-row {
+          overflow-x: auto !important;
+          gap: calc(8 * var(--u)) !important;
+          padding-bottom: calc(4 * var(--u)) !important;
+          scrollbar-width: none !important;
+        }
+        .days-row::-webkit-scrollbar {
+          display: none !important;
+        }
+        .day-label {
+          min-width: calc(70 * var(--u)) !important;
+          flex-shrink: 0 !important;
+        }
+        .big-temp {
+          font-size: clamp(42px, 11vw, 58px) !important;
+        }
+      }
+
+      @media (max-width: 420px) {
+        :root {
+          --u: calc(100vw / 430);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- SVG Icon Sprite -->
+    <svg xmlns="http://www.w3.org/2000/svg" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;" aria-hidden="true">
+      <defs>
+        <clipPath id="logo-circle">
+          <circle cx="20" cy="20" r="13" />
+        </clipPath>
+      </defs>
+
+      <symbol id="i-grid" viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7.5" height="7.5" rx="2" fill="currentColor" />
+        <rect x="13.5" y="3" width="7.5" height="7.5" rx="2" fill="currentColor" />
+        <rect x="3" y="13.5" width="7.5" height="7.5" rx="2" fill="currentColor" />
+        <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" fill="currentColor" />
+      </symbol>
+
+      <symbol id="i-chart" viewBox="0 0 24 24">
+        <path d="M4 19h16M7 16v-4M12 16V8M17 16v-6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-globe" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" />
+        <ellipse cx="12" cy="12" rx="4.5" ry="9" stroke="currentColor" stroke-width="1.8" fill="none" />
+        <path d="M3.5 12h17" stroke="currentColor" stroke-width="1.8" />
+      </symbol>
+
+      <symbol id="i-cal" viewBox="0 0 24 24">
+        <rect x="3" y="4.5" width="18" height="16" rx="3" stroke="currentColor" stroke-width="2" fill="none" />
+        <path d="M3 9.5h18M8 2.5v4M16 2.5v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        <circle cx="8" cy="14" r="1.2" fill="currentColor" />
+        <circle cx="12" cy="14" r="1.2" fill="currentColor" />
+        <circle cx="16" cy="14" r="1.2" fill="currentColor" />
+      </symbol>
+
+      <symbol id="i-gear" viewBox="0 0 24 24">
+        <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" stroke-width="2" fill="none" />
+        <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="2" fill="none" />
+      </symbol>
+
+      <symbol id="i-out" viewBox="0 0 24 24">
+        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-search" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2.2" fill="none" />
+        <path d="M16.5 16.5L21 21" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+      </symbol>
+
+      <symbol id="i-bell" viewBox="0 0 24 24">
+        <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-pin" viewBox="0 0 24 24">
+        <path d="M12 2a7 7 0 00-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 00-7-7z" fill="currentColor" />
+        <circle cx="12" cy="9" r="2.5" fill="#04121b" />
+      </symbol>
+
+      <symbol id="i-wind" viewBox="0 0 24 24">
+        <path d="M4 8h11a2.5 2.5 0 10-2.5-2.5M2 13h15.5a2.5 2.5 0 11-2.5 2.5M6 18h8a2 2 0 10-2-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-drop" viewBox="0 0 24 24">
+        <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z" fill="currentColor" />
+      </symbol>
+
+      <symbol id="i-gust" viewBox="0 0 24 24">
+        <path d="M3 7h13a3 3 0 10-3-3M2 12h17a3 3 0 11-3 3M4 17h11a2.5 2.5 0 10-2.5-2.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-cloud" viewBox="0 0 24 24">
+        <path d="M17.5 19H6.5A5.5 5.5 0 016 8.03 7 7 0 0119.5 10a4.5 4.5 0 01-2 9z" fill="currentColor" opacity="0.95" />
+      </symbol>
+
+      <symbol id="i-cloud2" viewBox="0 0 24 24">
+        <circle cx="8.5" cy="8.5" r="4" fill="currentColor" opacity="0.5" />
+        <path d="M18.5 20H7.5A4.5 4.5 0 017 11.03 6 6 0 0119.5 13a3.5 3.5 0 01-1 7z" fill="currentColor" />
+      </symbol>
+
+      <symbol id="i-hail" viewBox="0 0 24 24">
+        <path d="M17.5 16H6.5A4.5 4.5 0 016 7.03 6 6 0 0119.5 9a3.5 3.5 0 01-2 7z" fill="currentColor" opacity="0.95" />
+        <circle cx="8" cy="19.5" r="1.3" fill="currentColor" />
+        <circle cx="12" cy="20.5" r="1.3" fill="currentColor" />
+        <circle cx="16" cy="19.5" r="1.3" fill="currentColor" />
+      </symbol>
+
+      <symbol id="i-sun" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="4.5" fill="currentColor" />
+        <path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.93 4.93l1.77 1.77M17.3 17.3l1.77 1.77M4.93 19.07l1.77-1.77M17.3 6.7l1.77-1.77" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </symbol>
+
+      <symbol id="i-moon" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" />
+      </symbol>
+
+      <symbol id="i-avatar" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="11" fill="rgba(255,255,255,0.2)" />
+        <circle cx="12" cy="8" r="4" fill="currentColor" />
+        <path d="M4.5 19.5c1.5-3.5 4.5-5 7.5-5s6 1.5 7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-close" viewBox="0 0 24 24">
+        <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+      </symbol>
+
+      <symbol id="i-volume-on" viewBox="0 0 24 24">
+        <path d="M11 5L6 9H2v6h4l5 4V5zM15.54 8.46a5 5 0 010 7.07M19.07 4.93a10 10 0 010 14.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </symbol>
+
+      <symbol id="i-volume-off" viewBox="0 0 24 24">
+        <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+      </symbol>
+    </svg>
+
+    <div class="stage" id="stage">
+      <!-- Dynamic Sun Glow Overlay -->
+      <div class="sun-glow" id="sun-glow" aria-hidden="true"></div>
+      <!-- Atmospheric Dynamic Background Layers -->
+      <div id="bg-dynamic-photo" class="bg-layer bg-dynamic-photo active" aria-hidden="true"></div>
+      <div id="bg-sunny" class="bg-layer bg-sunny" aria-hidden="true"></div>
+      <div id="bg-storm" class="bg-layer bg-storm" aria-hidden="true"></div>
+      <div id="bg-cloudy" class="bg-layer bg-cloudy" aria-hidden="true"></div>
+      <div id="bg-rain" class="bg-layer bg-rain" aria-hidden="true"></div>
+      <div id="bg-night" class="bg-layer bg-night" aria-hidden="true"></div>
+      <div id="bg-snow" class="bg-layer bg-snow" aria-hidden="true"></div>
+
+      <!-- Time of Day Atmospheric Light Tint (Dawn, Day, Sunset, Dusk, Night) -->
+      <div id="time-phase-tint" class="time-phase-tint phase-day" aria-hidden="true"></div>
+
+      <!-- Living Sun / Celestial Orbit & Weather Particle Canvas -->
+      <canvas id="weather-canvas" class="weather-canvas" aria-hidden="true"></canvas>
+
+      <div class="stage-vignette" aria-hidden="true"></div>
+
+      <!-- 1) Left Sidebar -->
+      <aside class="sidebar" aria-label="Asosiy boshqaruv paneli">
+        <div id="sidebar-pip" class="pip" aria-hidden="true"></div>
+        <button type="button" class="logo-link" id="btn-logo" aria-label="Bosh sahifaga qaytish (Toshkent)">
+          <svg class="logo" viewBox="0 0 40 40" width="100%" height="100%">
+            <rect width="40" height="40" rx="12" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.28)" stroke-width="1.2" />
+            <g clip-path="url(#logo-circle)">
+              <path d="M6 11 Q13 8 20 11 T34 11" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+              <path d="M6 14 Q13 11 20 14 T34 14" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+              <path d="M6 17 Q13 14 20 17 T34 17" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+              <path d="M6 20 Q13 17 20 20 T34 20" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+              <path d="M6 23 Q13 20 20 23 T34 23" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+              <path d="M6 26 Q13 23 20 26 T34 26" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+              <path d="M6 29 Q13 26 20 29 T34 29" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round" />
+            </g>
+          </svg>
+        </button>
+
+        <nav class="nav" aria-label="Asosiy menyu">
+          <button type="button" id="nav-dashboard" class="active" aria-label="Bosh sahifa" aria-current="page" data-top="126" title="Bosh sahifa (Dashboard)">
+            <svg class="icon-nav"><use href="#i-grid" /></svg>
+          </button>
+          <button type="button" id="nav-reports" aria-label="Atmosfera hisobotlari" data-top="192" title="Atmosfera hisobotlari">
+            <svg class="icon-nav"><use href="#i-chart" /></svg>
+          </button>
+          <button type="button" id="nav-explore" aria-label="Shaharlar va tumanlar" data-top="258" title="Shaharlar va tumanlar">
+            <svg class="icon-nav"><use href="#i-globe" /></svg>
+          </button>
+          <button type="button" id="nav-calendar" aria-label="14 kunlik taqvim" data-top="324" title="14 kunlik taqvim">
+            <svg class="icon-nav"><use href="#i-cal" /></svg>
+          </button>
+          <button type="button" id="nav-settings" aria-label="Sozlamalar" data-top="390" title="Ilova sozlamalari">
+            <svg class="icon-nav"><use href="#i-gear" /></svg>
+          </button>
+        </nav>
+
+        <button type="button" class="logout" id="btn-logout" aria-label="Tizimdan chiqish" title="Foydalanuvchi hisobi">
+          <svg class="icon-nav"><use href="#i-out" /></svg>
+        </button>
+      </aside>
+
+      <!-- 2) Header -->
+      <header class="header">
+        <div class="user-info">
+          <!-- Real-Time Local Clock and Live Weather API Chip -->
+          <div style="display:flex; align-items:center; gap:calc(8*var(--u)); flex-wrap:wrap;">
+            <div class="header-live-time-chip" id="header-time-chip">
+              <span class="live-dot" aria-hidden="true"></span>
+              <span id="live-clock-text">🕒 12:00:00 • Toshkent</span>
+            </div>
+            <div class="header-live-time-chip" id="header-api-chip" style="background:rgba(4,18,27,0.55); border-color:rgba(129,199,132,0.35);">
+              <span style="color:#00e676; font-size:calc(10*var(--u));">●</span>
+              <span id="header-api-status-text" style="color:#81c784; font-weight:600;">Open-Meteo Jonli API</span>
+            </div>
+          </div>
+          <div class="who" id="header-user" title="Profilni ko'rish">
+            <span>Calfin Danang</span>
+            <span id="header-location-tag" style="font-size:calc(12*var(--u)); font-weight:500; opacity:0.85; padding:calc(2*var(--u)) calc(7*var(--u)); background:rgba(255,255,255,.16); border-radius:calc(6*var(--u));">Toshkent</span>
+          </div>
+        </div>
+        <div class="tools">
+          <button type="button" class="tool" id="btn-sound-toggle" aria-label="Ovoz effektlari" title="Ob-havo ovoz effektlarini yoqish/o'chirish">
+            <svg class="icon" id="sound-toggle-svg"><use href="#i-volume-off" /></svg>
+          </button>
+          <button type="button" class="tool" id="btn-search" aria-label="Shahar qidirish" title="Shahar va tuman qidirish">
+            <svg class="icon"><use href="#i-search" /></svg>
+          </button>
+          <button type="button" class="tool" id="btn-notifications" aria-label="Ob-havo ogohlantirishlari" title="Ob-havo ogohlantirishlari">
+            <span class="badge" aria-hidden="true"></span>
+            <svg class="icon"><use href="#i-bell" /></svg>
+          </button>
+
+          <!-- Notifications Dropdown -->
+          <div id="popover-notifications" class="popover" role="dialog" aria-label="Ob-havo bildirishnomalari">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:calc(12*var(--u));">
+              <span style="font-weight:700; font-size:calc(15*var(--u));">Ob-havo ogohlantirishlari</span>
+              <button type="button" id="btn-clear-notif" style="background:none; border:none; color:rgba(255,255,255,.7); font-size:calc(12*var(--u)); cursor:pointer;">O'qilgan deb belgilash</button>
+            </div>
+            <div class="notif-item">
+              <div class="notif-title">☀️ Toshkent — Quyoshli va musaffo</div>
+              <p style="color:rgba(255,255,255,.85);">Kunduzgi harorat +22°C, kechasi esa musaffo va salqin +11°C. Real vaqt bo'yicha quyosh nurlari faol.</p>
+            </div>
+            <div class="notif-item">
+              <div class="notif-title">❄️ Chimyon (Chotqol) — Qor yog'ishi</div>
+              <p style="color:rgba(255,255,255,.85);">Tog' yonbag'irlarida mayin qor uchqunlari yog'moqda. Harorat +3°C, tunda -4°C gacha soviydi.</p>
+            </div>
+            <div class="notif-item">
+              <div class="notif-title">💨 Nukus — Kuchli dasht shamoli</div>
+              <p style="color:rgba(255,255,255,.85);">Shamol tezligi 36 km/soat, shiddatli shabada 48 km/soatgacha ko'tarilmoqda.</p>
+            </div>
+            <div class="notif-item">
+              <div class="notif-title">⛈️ Markaziy Jakarta — Momaqaldiroq</div>
+              <p style="color:rgba(255,255,255,.85);">Chaqmoq chaqnashi va kuchli tropik jala yog'moqda. Shamol tezligi 32 km/soat.</p>
+            </div>
+          </div>
+
+          <div class="avatar-wrap" id="header-avatar" title="Foydalanuvchi profili">
+            <svg class="avatar-fallback" aria-hidden="true"><use href="#i-avatar" /></svg>
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=faces&q=80&auto=format" alt="Calfin Danang" loading="eager" decoding="async" onerror="this.remove()" />
+          </div>
+        </div>
+      </header>
+
+      <!-- 3) Main Central Workspace (Inline Views Panel: Dashboard, Reports, Explore, Calendar, Settings) -->
+      <div class="main-view-panel" id="main-view-panel">
+        
+        <!-- View 1: Dashboard / Hero (Default) -->
+        <section class="inline-view active-view" id="view-dashboard">
+          <div class="hero">
+            <div class="hero-top-row">
+              <div class="chip sheen" id="btn-forecast-chip" title="Batafsil hisobotlarni ko'rish">Atmosfera tahlili</div>
+              <!-- Real-Time Celestial Phase Badge -->
+              <div class="phase-badge" id="hero-phase-badge" title="Vaqt mintaqasi va quyosh fazasi">
+                <span id="phase-badge-icon">☀️</span>
+                <span id="phase-badge-text">Kunduz</span>
+              </div>
+            </div>
+
+            <!-- Daytime Headline -->
+            <h1 id="hero-headline">
+              <span class="ln"><span id="hero-ln1">Quyoshli va musaffo</span></span>
+              <span class="ln"><span id="hero-ln2">osmon</span></span>
+            </h1>
+            <!-- Daytime Blurb -->
+            <p class="blurb" id="hero-blurb">Poytaxtda ajoyib quyoshli va sokin ob-havo hukm surmoqda. Kunduzgi harorat +22°C gacha ko'tariladi, sharqiy mayin shabada esib turibdi. Yog'ingarchilik kutilmaydi.</p>
+
+            <!-- EVENING WEATHER DIRECTLY UNDER DAYTIME INFO -->
+            <section class="evening-card" aria-label="Kechki va tungi ob-havo">
+              <div class="evening-card-header">
+                <div class="evening-tag">
+                  <svg style="width:15px; height:15px; fill:#90caf9;"><use href="#i-moon" /></svg>
+                  <span>Kechki va tungi ob-havo:</span>
+                </div>
+                <span class="evening-temp-pill" id="evening-card-temp">+11°C</span>
+              </div>
+              <p class="evening-blurb" id="evening-card-blurb">Tunda musaffo oydin osmon, havo harorati +11°C gacha salqinlashadi. Shahar bo'ylab sokin va toza havo oqimi kuzatiladi.</p>
+            </section>
+
+            <!-- Main View Live Weather Metrics Strip (Humidity, Wind Speed, Pressure) -->
+            <div class="hero-metrics-strip" id="hero-metrics-strip" aria-label="Asosiy meteo ko'rsatkichlar">
+              <div class="hero-metric-chip" title="Havo namligi">
+                <svg class="hero-metric-icon"><use href="#i-drop" /></svg>
+                <span class="hero-metric-label">Namlik:</span>
+                <b class="hero-metric-val" id="hero-humidity-val">38%</b>
+              </div>
+              <div class="hero-metric-chip" title="Shamol tezligi">
+                <svg class="hero-metric-icon"><use href="#i-wind" /></svg>
+                <span class="hero-metric-label">Shamol:</span>
+                <b class="hero-metric-val" id="hero-wind-val">14 km/s</b>
+              </div>
+              <div class="hero-metric-chip" title="Atmosfera bosimi">
+                <svg class="hero-metric-icon"><use href="#i-gust" /></svg>
+                <span class="hero-metric-label">Bosim:</span>
+                <b class="hero-metric-val" id="hero-pressure-val">1014 hPa</b>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- View 6: Inline Search View (Integrated seamlessly with background) -->
+        <section class="inline-view" id="view-search">
+          <div class="inline-view-header">
+            <span class="inline-view-title">
+              <svg style="width:20px; height:20px; fill:currentColor;"><use href="#i-search" /></svg>
+              <span>Shahar va tuman qidiruvi</span>
+            </span>
+            <button type="button" class="btn-back-dashboard" data-go-dashboard>← Bosh sahifa</button>
+          </div>
+          <div class="inline-search-input-wrap" style="position:relative; margin-bottom:calc(12*var(--u));">
+            <input
+              type="text"
+              id="inline-input-city-search"
+              class="search-input"
+              placeholder="O'zbekiston viloyat, tuman yoki shahar nomini kiriting..."
+              autocomplete="off"
+              style="width:100%; padding:calc(12*var(--u)) calc(16*var(--u)) calc(12*var(--u)) calc(42*var(--u)); background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.3); border-radius:calc(16*var(--u)); color:#fff; font-size:calc(15*var(--u)); backdrop-filter:blur(10px); font-family:inherit;"
+            />
+            <svg style="position:absolute; left:calc(14*var(--u)); top:50%; transform:translateY(-50%); width:calc(20*var(--u)); height:calc(20*var(--u)); fill:rgba(255,255,255,0.8); pointer-events:none;"><use href="#i-search" /></svg>
+          </div>
+
+          <!-- Instant Autocomplete Recommendation Box -->
+          <div id="inline-autocomplete-box" style="display:none; margin-bottom:calc(12*var(--u)); background:rgba(4,18,27,0.7); border-radius:calc(16*var(--u)); padding:calc(10*var(--u)); border:1px solid rgba(255,255,255,0.2);">
+            <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.78); margin-bottom:calc(6*var(--u)); font-weight:600;">
+              Mos kelgan joylar tavsiyasi:
+            </div>
+            <div id="inline-search-autocomplete-list" class="autocomplete-list" style="max-height:calc(220*var(--u)); overflow-y:auto;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Saved Search History -->
+          <div id="inline-history-box" style="margin-top:calc(8*var(--u));">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:calc(8*var(--u));">
+              <span style="font-size:calc(13*var(--u)); color:rgba(255,255,255,.8); font-weight:600;">📌 Oxirgi qidirilgan joylar:</span>
+              <button type="button" id="inline-btn-clear-history" style="background:none; border:none; color:rgba(255,255,255,.6); font-size:calc(11.5*var(--u)); cursor:pointer;">Tozalash</button>
+            </div>
+            <div class="city-chip-grid" id="inline-search-history-chips" style="display:flex; flex-wrap:wrap; gap:calc(6*var(--u));">
+              <!-- Populated from localStorage -->
+            </div>
+          </div>
+
+          <!-- Preset Location Chips -->
+          <div style="margin-top:calc(14*var(--u)); border-top:1px solid rgba(255,255,255,.15); padding-top:calc(10*var(--u));">
+            <div style="font-size:calc(12.5*var(--u)); color:rgba(255,255,255,.75); margin-bottom:calc(8*var(--u));">
+              Tavsiya etilgan hududlar:
+            </div>
+            <div class="city-chip-grid" id="inline-search-chips-container" style="display:flex; flex-wrap:wrap; gap:calc(6*var(--u));">
+              <!-- Preset chips -->
+            </div>
+          </div>
+        </section>
+
+        <!-- View 2: Reports (Inline Atmosfera Ko'rsatkichlari) -->
+        <section class="inline-view" id="view-reports">
+          <div class="inline-view-header">
+            <span class="inline-view-title">
+              <svg style="width:20px; height:20px; fill:currentColor;"><use href="#i-chart" /></svg>
+              <span>Atmosfera ko'rsatkichlari</span>
+            </span>
+            <button type="button" class="btn-back-dashboard" data-go-dashboard>← Bosh sahifa</button>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:calc(12*var(--u)); margin-bottom:calc(14*var(--u));">
+            <div style="background:rgba(255,255,255,.12); padding:calc(14*var(--u)); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.2);">
+              <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">Havo sifati indeksi (AQI)</div>
+              <div style="font-size:calc(26*var(--u)); font-weight:700; margin:calc(4*var(--u)) 0; color:#4caf50;">38 AQI</div>
+              <div style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.85);">Toza, sayr uchun ideal havo</div>
+            </div>
+            <div style="background:rgba(255,255,255,.12); padding:calc(14*var(--u)); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.2);">
+              <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">UV nurlanish indeksi</div>
+              <div style="font-size:calc(26*var(--u)); font-weight:700; margin:calc(4*var(--u)) 0; color:#ffeb3b;">3 O'rtacha</div>
+              <div style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.85);">Mo'tadil quyosh nurlari</div>
+            </div>
+            <div style="background:rgba(255,255,255,.12); padding:calc(14*var(--u)); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.2);">
+              <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">Barometrik bosim</div>
+              <div style="font-size:calc(26*var(--u)); font-weight:700; margin:calc(4*var(--u)) 0;" id="report-pressure-val">1014 hPa</div>
+              <div style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.85);">Barqaror atmosfera bosimi</div>
+            </div>
+            <div style="background:rgba(255,255,255,.12); padding:calc(14*var(--u)); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.2);">
+              <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">Havo namligi</div>
+              <div style="font-size:calc(26*var(--u)); font-weight:700; margin:calc(4*var(--u)) 0;" id="report-humidity-val">38%</div>
+              <div style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.85);">Qulay nafas olish muhiti</div>
+            </div>
+          </div>
+          <!-- Real-Time Open-Meteo API telemetry status card -->
+          <div style="background:rgba(4,18,27,.6); padding:calc(12*var(--u)) calc(16*var(--u)); border-radius:calc(14*var(--u)); border:1px solid rgba(129,199,132,.35); display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; font-size:calc(13*var(--u)); color:#a5d6a7;">🌐 Open-Meteo Jonli API Holati</div>
+              <div style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.8);" id="report-api-status-desc">Haqiqiy ob-havo sun'iy yo'ldoshlari bilan sinxronlashgan</div>
+            </div>
+            <span style="font-size:calc(12*var(--u)); font-weight:700; background:rgba(76,175,80,.25); color:#81c784; padding:calc(3*var(--u)) calc(8*var(--u)); border-radius:calc(8*var(--u)); border:1px solid #4caf50;">FAOL 🟢</span>
+          </div>
+        </section>
+
+        <!-- View 3: Explore (Inline O'zbekiston viloyatlari va tumanlari) -->
+        <section class="inline-view" id="view-explore">
+          <div class="inline-view-header">
+            <span class="inline-view-title">
+              <svg style="width:20px; height:20px; fill:currentColor;"><use href="#i-globe" /></svg>
+              <span>Shaharlar va tumanlar</span>
+            </span>
+            <button type="button" class="btn-back-dashboard" data-go-dashboard>← Bosh sahifa</button>
+          </div>
+          <!-- Regional category filters -->
+          <div style="display:flex; gap:calc(6*var(--u)); overflow-x:auto; padding-bottom:calc(8*var(--u)); margin-bottom:calc(10*var(--u)); scrollbar-width:none;" id="explore-filter-tabs">
+            <button type="button" class="city-chip" data-region="all" style="background:rgba(255,255,255,.3); border-color:#fff;">Barchasi</button>
+            <button type="button" class="city-chip" data-region="toshkent">Toshkent vil.</button>
+            <button type="button" class="city-chip" data-region="vodiy">Farg'ona vodiysi</button>
+            <button type="button" class="city-chip" data-region="samarqand">Samarqand & Buxoro</button>
+            <button type="button" class="city-chip" data-region="janub">Surxondaryo & Qashqadaryo</button>
+            <button type="button" class="city-chip" data-region="chol">Navoiy & Qoraqalpog'iston</button>
+            <button type="button" class="city-chip" data-region="global">Xalqaro</button>
+          </div>
+          <!-- Location cards grid -->
+          <div id="inline-explore-list" style="display:flex; flex-direction:column; gap:calc(8*var(--u)); overflow-y:auto; max-height:calc(300*var(--u)); padding-right:calc(4*var(--u));">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+        <!-- View 4: Calendar (Inline 14-kunlik taqvim) -->
+        <section class="inline-view" id="view-calendar">
+          <div class="inline-view-header">
+            <span class="inline-view-title">
+              <svg style="width:20px; height:20px; fill:currentColor;"><use href="#i-cal" /></svg>
+              <span>14 kunlik batafsil taqvim</span>
+            </span>
+            <button type="button" class="btn-back-dashboard" data-go-dashboard>← Bosh sahifa</button>
+          </div>
+          <div id="inline-calendar-list" style="display:flex; flex-direction:column; gap:calc(8*var(--u)); overflow-y:auto; max-height:calc(320*var(--u)); padding-right:calc(4*var(--u));">
+            <!-- Populated via JS -->
+          </div>
+        </section>
+
+        <!-- View 5: Settings (Inline Sozlamalar) -->
+        <section class="inline-view" id="view-settings">
+          <div class="inline-view-header">
+            <span class="inline-view-title">
+              <svg style="width:20px; height:20px; fill:currentColor;"><use href="#i-gear" /></svg>
+              <span>Ilova sozlamalari</span>
+            </span>
+            <button type="button" class="btn-back-dashboard" data-go-dashboard>← Bosh sahifa</button>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:calc(12*var(--u));">
+            <!-- Real-Time Sync vs Manual Time Preview -->
+            <div style="padding:calc(12*var(--u)); background:rgba(255,255,255,.1); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.18);">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:calc(8*var(--u));">
+                <div>
+                  <div style="font-weight:700; font-size:calc(14.5*var(--u));">Vaqt mintaqasi va quyosh rejimi</div>
+                  <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);" id="inline-settings-time-subtext">Hozirda real vaqt bilan sinxron</div>
+                </div>
+                <button type="button" id="inline-toggle-realtime-sync" style="padding:calc(6*var(--u)) calc(14*var(--u)); border-radius:calc(12*var(--u)); background:rgba(76,175,80,.4); border:1px solid #4caf50; color:#fff; font-weight:700; cursor:pointer;">
+                  JONLI VAQT
+                </button>
+              </div>
+              <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.8); margin-bottom:calc(6*var(--u));">Quyosh fazalarini sinash:</div>
+              <div style="display:flex; flex-wrap:wrap; gap:calc(6*var(--u));">
+                <button type="button" class="city-chip" data-time="6.8">🌅 Chiqish (06:48)</button>
+                <button type="button" class="city-chip" data-time="12.0">☀️ Tush (12:00)</button>
+                <button type="button" class="city-chip" data-time="17.6">🌇 Botish (17:34)</button>
+                <button type="button" class="city-chip" data-time="20.0">🌆 Oqshom (20:00)</button>
+                <button type="button" class="city-chip" data-time="23.5">🌙 Tun (23:30)</button>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:calc(12*var(--u)); background:rgba(255,255,255,.1); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.18);">
+              <div>
+                <div style="font-weight:700; font-size:calc(14.5*var(--u));">Harorat o'lchov birligi</div>
+                <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">Selsiy (°C) yoki Farengeyt (°F)</div>
+              </div>
+              <button type="button" id="inline-toggle-temp-unit" style="padding:calc(6*var(--u)) calc(14*var(--u)); border-radius:calc(12*var(--u)); background:rgba(255,255,255,.25); border:1px solid #fff; color:#fff; font-weight:700; cursor:pointer;">
+                °C
+              </button>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:calc(12*var(--u)); background:rgba(255,255,255,.1); border-radius:calc(16*var(--u)); border:1px solid rgba(255,255,255,.18);">
+              <div>
+                <div style="font-weight:700; font-size:calc(14.5*var(--u));">Jonli animatsion canvas</div>
+                <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">Quyosh, yulduzlar, qor, shamol va jala effektlari</div>
+              </div>
+              <button type="button" id="inline-toggle-live-canvas" style="padding:calc(6*var(--u)) calc(14*var(--u)); border-radius:calc(12*var(--u)); background:rgba(76,175,80,.4); border:1px solid #4caf50; color:#fff; font-weight:700; cursor:pointer;">
+                YONIQ
+              </button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- 4) Forecast Strip: Daytime on Top, Nighttime Directly Beneath -->
+      <section class="forecast" aria-label="6 kunlik ob-havo prognozi (Kunduzgi va Kechki)">
+        <div class="temps-row" id="temps-container">
+          <!-- Populated dynamically: Day on top, Night beneath -->
+        </div>
+
+        <svg class="wave-svg" viewBox="0 0 835 230" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="wg" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+              <stop offset="30%" stop-color="#ffffff" stop-opacity="0.95" />
+              <stop offset="70%" stop-color="#ffffff" stop-opacity="1" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0.4" />
+            </linearGradient>
+
+            <linearGradient id="wf" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.30" />
+              <stop offset="45%" stop-color="#ffffff" stop-opacity="0.12" />
+              <stop offset="85%" stop-color="#ffffff" stop-opacity="0" />
+            </linearGradient>
+
+            <mask id="wfade" maskUnits="userSpaceOnUse" x="0" y="0" width="835" height="230">
+              <linearGradient id="wfg" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7" />
+                <stop offset="35%" stop-color="#ffffff" stop-opacity="0.2" />
+                <stop offset="65%" stop-color="#000000" stop-opacity="0" />
+                <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+              </linearGradient>
+              <rect x="0" y="0" width="835" height="230" fill="url(#wfg)" />
+            </mask>
+
+            <clipPath id="wclip" clipPathUnits="userSpaceOnUse">
+              <rect id="wclipr" x="0" y="0" width="835" height="230" />
+            </clipPath>
+          </defs>
+
+          <path
+            id="wave-fill-path"
+            d="M0,79 C 70,75 125,62 180,56 C 235,50 285,46 340,44 C 405,42 450,88 510,102 C 570,116 610,38 670,22 C 730,6 780,52 835,86 L835,230 L0,230 Z"
+            fill="url(#wf)"
+            mask="url(#wfade)"
+            clip-path="url(#wclip)"
+          />
+          <path
+            id="wave-stroke-outer"
+            class="wline"
+            d="M0,79 C 70,75 125,62 180,56 C 235,50 285,46 340,44 C 405,42 450,88 510,102 C 570,116 610,38 670,22 C 730,6 780,52 835,86"
+            stroke="url(#wg)"
+            stroke-width="6.2"
+            opacity="0.17"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            pathLength="1"
+            stroke-dasharray="1"
+            stroke-dashoffset="0"
+          />
+          <path
+            id="wave-stroke-mid"
+            class="wline"
+            d="M0,79 C 70,75 125,62 180,56 C 235,50 285,46 340,44 C 405,42 450,88 510,102 C 570,116 610,38 670,22 C 730,6 780,52 835,86"
+            stroke="url(#wg)"
+            stroke-width="4.6"
+            opacity="0.26"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            pathLength="1"
+            stroke-dasharray="1"
+            stroke-dashoffset="0"
+          />
+          <path
+            id="wave-stroke-core"
+            class="wline"
+            d="M0,79 C 70,75 125,62 180,56 C 235,50 285,46 340,44 C 405,42 450,88 510,102 C 570,116 610,38 670,22 C 730,6 780,52 835,86"
+            stroke="url(#wg)"
+            stroke-width="3.4"
+            opacity="1"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            fill="none"
+            pathLength="1"
+            stroke-dasharray="1"
+            stroke-dashoffset="0"
+          />
+        </svg>
+
+        <div class="days-row" id="days-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+
+      <!-- 5) Right Rail -->
+      <aside class="rail" id="cards-rail" aria-label="Hududiy ob-havo kartalari">
+        <!-- Rendered dynamically: active card + list with Day on top, Evening beneath -->
+      </aside>
+    </div>
+
+    <!-- Modals Section -->
+
+    <!-- Modal: User Profile / Quick System Info -->
+    <div id="modal-profile" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
+      <div class="glass-modal">
+        <div class="modal-header">
+          <span id="profile-modal-title" class="modal-title">Foydalanuvchi hisobi</span>
+          <button type="button" class="modal-close" data-close="modal-profile" aria-label="Profilni yopish">
+            <svg style="width:calc(18*var(--u)); height:calc(18*var(--u));"><use href="#i-close" /></svg>
+          </button>
+        </div>
+        <div style="display:flex; align-items:center; gap:calc(16*var(--u)); margin-bottom:calc(20*var(--u));">
+          <div style="width:calc(64*var(--u)); height:calc(64*var(--u)); border-radius:50%; overflow:hidden; border:2px solid #fff;">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&crop=faces&q=80&auto=format" style="width:100%; height:100%; object-fit:cover;" alt="Calfin Danang" />
+          </div>
+          <div>
+            <div style="font-size:calc(20*var(--u)); font-weight:700;">Calfin Danang</div>
+            <div style="font-size:calc(13.5*var(--u)); color:rgba(255,255,255,.75);">Bosh meteorolog mutaxassis</div>
+            <div style="font-size:calc(12*var(--u)); color:#4caf50; margin-top:calc(2*var(--u));">● Real vaqt mintaqasi faol</div>
+          </div>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:calc(10*var(--u));">
+          <button type="button" id="btn-sync-now" style="padding:calc(12*var(--u)); border-radius:calc(14*var(--u)); background:rgba(255,255,255,.2); border:1px solid #fff; color:#fff; font-weight:600; cursor:pointer;">
+            Meteo-sun'iy yo'ldosh ma'lumotlarini yangilash
+          </button>
+          <button type="button" id="btn-do-logout" style="padding:calc(12*var(--u)); border-radius:calc(14*var(--u)); background:rgba(244,67,54,.3); border:1px solid #f44336; color:#fff; font-weight:600; cursor:pointer;">
+            Hisobdan chiqish
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Interactive Weather Application Logic -->
+    <script type="module">
+      import {
+        initAudioEngine,
+        toggleMute,
+        isAudioMuted,
+        playWeatherSound,
+        stopAllSounds
+      } from './src/utils/sound.ts';
+
+      import {
+        CITIES_DATABASE,
+        getFullCityData,
+        searchLocations,
+        getSearchHistory,
+        saveSearchHistory,
+        formatTemp,
+        buildWavePathForTemps,
+        getLocalTimeForTimezone,
+        getCelestialCoordinates,
+        parseTimeToDecimal,
+        calculateAstronomicalOrbit,
+        computeMoonSvgPaths,
+        fetchLiveMeteoWeather,
+        BACKGROUND_IMAGES
+      } from './src/utils/weather.ts';
+
+      // ==========================================
+      // Application State (Declared at Top Level)
+      // ==========================================
+      let isFahrenheit = false;
+      let activeCityIndex = 0; // Toshkent is default index 0
+      let activeDayIndex = 0; // Default to today
+      let selectedTimePhase = null; // null | 'day' | 'night' (forces daytime or nighttime mode)
+      let isRealTimeSync = true;
+      let manualDecimalHour = null; // if testing custom time
+      let liveCanvasEnabled = true;
+      let dynamicCities = CITIES_DATABASE.map(c => getFullCityData(c));
+
+      // Living Animation Engine State
+      let currentWeatherEffect = 'sunny'; // 'sunny' | 'rain' | 'storm' | 'snow' | 'wind' | 'cloudy'
+      let currentCelestialPhase = 'day';   // 'dawn' | 'day' | 'sunset' | 'dusk' | 'night'
+      let currentDecimalHour = 12.0;
+      let currentSunriseStr = "06:48";
+      let currentSunsetStr = "17:34";
+
+      // DOM Elements
+      const heroHeadline = document.getElementById('hero-headline');
+      const heroLn1 = document.getElementById('hero-ln1');
+      const heroLn2 = document.getElementById('hero-ln2');
+      const heroBlurb = document.getElementById('hero-blurb');
+      const eveningCardTemp = document.getElementById('evening-card-temp');
+      const eveningCardBlurb = document.getElementById('evening-card-blurb');
+      const heroPhaseBadge = document.getElementById('hero-phase-badge');
+      const phaseBadgeIcon = document.getElementById('phase-badge-icon');
+      const phaseBadgeText = document.getElementById('phase-badge-text');
+      const liveClockText = document.getElementById('live-clock-text');
+      const headerLocationTag = document.getElementById('header-location-tag');
+      const timePhaseTint = document.getElementById('time-phase-tint');
+      const tempsContainer = document.getElementById('temps-container');
+      const daysContainer = document.getElementById('days-container');
+      const cardsRail = document.getElementById('cards-rail');
+      const waveFillPath = document.getElementById('wave-fill-path');
+      const waveStrokeOuter = document.getElementById('wave-stroke-outer');
+      const waveStrokeMid = document.getElementById('wave-stroke-mid');
+      const waveStrokeCore = document.getElementById('wave-stroke-core');
+      const sidebarPip = document.getElementById('sidebar-pip');
+
+      const toggleTempUnitBtn = document.getElementById('inline-toggle-temp-unit');
+      const toggleLiveCanvasBtn = document.getElementById('inline-toggle-live-canvas');
+      const toggleRealtimeBtn = document.getElementById('inline-toggle-realtime-sync');
+      const settingsTimeSubtext = document.getElementById('inline-settings-time-subtext');
+
+      // Floating Modals (Search, Profile)
+      const modals = {
+        search: document.getElementById('modal-search'),
+        profile: document.getElementById('modal-profile'),
+      };
+      const popoverNotif = document.getElementById('popover-notifications');
+
+      function openModal(name) {
+        if (modals[name]) modals[name].classList.add('open');
+      }
+      function closeModal(name) {
+        if (modals[name]) modals[name].classList.remove('open');
+      }
+      function closeAllModals() {
+        Object.values(modals).forEach(m => { if (m) m.classList.remove('open'); });
+        if (popoverNotif) popoverNotif.classList.remove('open');
+      }
+
+      document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) backdrop.classList.remove('open');
+        });
+      });
+      document.querySelectorAll('[data-close]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-close');
+          const target = document.getElementById(id);
+          if (target) target.classList.remove('open');
+        });
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeAllModals();
+      });
+
+      // =======================================================
+      // INLINE VIEW SWITCHER (Dashboard, Reports, Explore, Calendar, Settings)
+      // =======================================================
+      function showInlineView(viewId) {
+        document.querySelectorAll('.main-view-panel .inline-view').forEach(v => v.classList.remove('active-view'));
+        const target = document.getElementById(viewId);
+        if (target) target.classList.add('active-view');
+
+        // Sync sidebar active state & pip position
+        document.querySelectorAll('.sidebar .nav button').forEach(b => b.classList.remove('active'));
+        const navMap = {
+          'view-dashboard': { id: 'nav-dashboard', top: 126 },
+          'view-reports': { id: 'nav-reports', top: 192 },
+          'view-explore': { id: 'nav-explore', top: 258 },
+          'view-calendar': { id: 'nav-calendar', top: 324 },
+          'view-settings': { id: 'nav-settings', top: 390 }
+        };
+        const item = navMap[viewId];
+        if (item) {
+          const btn = document.getElementById(item.id);
+          if (btn) btn.classList.add('active');
+          updateSidebarPip(item.top);
+        }
+      }
+
+      document.querySelectorAll('[data-go-dashboard]').forEach(btn => {
+        btn.addEventListener('click', () => showInlineView('view-dashboard'));
+      });
+
+      // Compute current local time info for active city
+      function getCurrentCityTimeInfo() {
+        const city = dynamicCities[activeCityIndex];
+        if (isRealTimeSync || manualDecimalHour === null) {
+          return getLocalTimeForTimezone(city.timezone, new Date(), city.sunriseTime, city.sunsetTime);
+        } else {
+          // Manual custom decimal hour
+          const h = Math.floor(manualDecimalHour);
+          const m = Math.floor((manualDecimalHour - h) * 60);
+          const s = 0;
+          const pad = (n) => n.toString().padStart(2, '0');
+          const timeString = `${pad(h)}:${pad(m)}:${pad(s)}`;
+          const sunriseDec = parseTimeToDecimal(city.sunriseTime);
+          const sunsetDec = parseTimeToDecimal(city.sunsetTime);
+          let phase = 'day';
+          let phaseName = 'Kunduz';
+          let isNight = false;
+
+          if (manualDecimalHour >= sunriseDec - 0.75 && manualDecimalHour < sunriseDec + 0.75) {
+            phase = 'dawn';
+            phaseName = 'Quyosh chiqishi';
+          } else if (manualDecimalHour >= sunriseDec + 0.75 && manualDecimalHour < sunsetDec - 0.75) {
+            phase = 'day';
+            phaseName = 'Kunduz';
+          } else if (manualDecimalHour >= sunsetDec - 0.75 && manualDecimalHour < sunsetDec + 0.5) {
+            phase = 'sunset';
+            phaseName = 'Quyosh botishi';
+          } else if (manualDecimalHour >= sunsetDec + 0.5 && manualDecimalHour < sunsetDec + 1.5) {
+            phase = 'dusk';
+            phaseName = "G'ira-shira oqshom";
+            isNight = false;
+          } else {
+            phase = 'night';
+            phaseName = 'Tun';
+            isNight = true;
+          }
+
+          return {
+            hours: h,
+            minutes: m,
+            seconds: s,
+            decimalHour: manualDecimalHour,
+            timeString,
+            dateString: "25-okt",
+            isNight,
+            phase,
+            phaseName
+          };
+        }
+      }
+
+      // Real-Time Astronomical Sky Gradient Interpolator based on sunPos.altitude
+      function computeSkyGradient(altRad, isRising, weatherEffect) {
+        // Weather-to-Atmosphere mapping overrides
+        if (weatherEffect === 'storm') {
+          return 'linear-gradient(180deg, #070b12 0%, #111a28 40%, #1e293b 75%, #334155 100%)';
+        }
+        if (weatherEffect === 'rain') {
+          return 'linear-gradient(180deg, #111923 0%, #1c2734 40%, #2e3e50 75%, #475569 100%)';
+        }
+        if (weatherEffect === 'cloudy') {
+          return 'linear-gradient(180deg, #1e293b 0%, #334155 40%, #4b5d73 75%, #64748b 100%)';
+        }
+        if (weatherEffect === 'snow') {
+          return 'linear-gradient(180deg, #182230 0%, #2c3b4e 45%, #506680 80%, #7e9bb5 100%)';
+        }
+
+        // Night / Deep Space (Altitude < -0.1 rad): Deep dark blue/black tones (#04121b)
+        if (altRad < -0.1) {
+          const depth = Math.max(0, Math.min(1, (-altRad - 0.1) / 0.4));
+          const topHex = depth > 0.5 ? '#020710' : '#030c17';
+          const midHex = depth > 0.5 ? '#04121b' : '#051826';
+          const botHex = depth > 0.5 ? '#081d2e' : '#0a2336';
+          return `linear-gradient(180deg, ${topHex} 0%, ${midHex} 50%, ${botHex} 100%)`;
+        }
+
+        // Dawn / Sunrise (-0.1 to 0.05 rad, isRising) or Dusk / Sunset (-0.1 to 0.05 rad, !isRising)
+        if (altRad >= -0.1 && altRad <= 0.05) {
+          const t = (altRad + 0.1) / 0.15; // 0.0 (night) -> 1.0 (day)
+          if (isRising) {
+            // Dawn / Sunrise: Warm golden, soft pink, and orange hues at the horizon
+            if (t < 0.35) {
+              return 'linear-gradient(180deg, #090e1c 0%, #1e1b4b 35%, #581c87 65%, #9d174d 85%, #f43f5e 100%)';
+            } else if (t < 0.70) {
+              return 'linear-gradient(180deg, #1e1b4b 0%, #431407 30%, #9a3412 55%, #ea580c 75%, #fbbf24 100%)';
+            } else {
+              return 'linear-gradient(180deg, #0369a1 0%, #0284c7 35%, #38bdf8 65%, #fdba74 88%, #fef08a 100%)';
+            }
+          } else {
+            // Dusk / Sunset: Deep orange, purple, and twilight gradients
+            if (t > 0.65) {
+              return 'linear-gradient(180deg, #0f172a 0%, #3b0764 35%, #701a75 60%, #c026d3 80%, #fb923c 100%)';
+            } else if (t > 0.30) {
+              return 'linear-gradient(180deg, #090d16 0%, #1e1b4b 35%, #4c1d95 65%, #9a3412 85%, #ea580c 100%)';
+            } else {
+              return 'linear-gradient(180deg, #050a14 0%, #0f172a 45%, #1e1b4b 80%, #312e81 100%)';
+            }
+          }
+        }
+
+        // Day / Noon (Altitude > 0.05 rad): Vibrant bright blue sky gradients
+        const dayProgress = Math.max(0, Math.min(1, (altRad - 0.05) / 0.7));
+        if (dayProgress > 0.55) {
+          return 'linear-gradient(180deg, #0284c7 0%, #0ea5e9 30%, #38bdf8 65%, #7dd3fc 85%, #bae6fd 100%)';
+        } else {
+          return 'linear-gradient(180deg, #1d72f3 0%, #38bdf8 35%, #60a5fa 70%, #93c5fd 100%)';
+        }
+      }
+
+      // Update background crossfade, atmosphere filters & tint based on city & time phase
+      function updateAtmosphere(timeInfo) {
+        const city = dynamicCities[activeCityIndex];
+        const dayData = city.days[activeDayIndex] || city.days[0];
+
+        // Force selected time phase if user clicked Kunduzgi or Kechasi tier
+        if (selectedTimePhase === 'night') {
+          timeInfo.isNight = true;
+          timeInfo.phase = 'night';
+          timeInfo.phaseName = "Tun (Kechki ko'rsatkich)";
+        } else if (selectedTimePhase === 'day') {
+          timeInfo.isNight = false;
+          timeInfo.phase = 'day';
+          timeInfo.phaseName = "Kunduz (Kunduzgi ko'rsatkich)";
+        }
+
+        let targetBg = dayData?.bgType || city.bgType;
+
+        if (timeInfo.isNight && targetBg !== 'storm' && targetBg !== 'rain') {
+          targetBg = 'night';
+        }
+
+        currentWeatherEffect = dayData?.weatherEffect || city.weatherEffect || 'sunny';
+        currentCelestialPhase = timeInfo.phase;
+        currentDecimalHour = timeInfo.decimalHour;
+        currentSunriseStr = city.sunriseTime;
+        currentSunsetStr = city.sunsetTime;
+
+        // Calculate live Sun altitude in radians for continuous sky gradient interpolation
+        const dateObj = getEffectiveAstroDate();
+        const liveAstro = calculateAstronomicalOrbit(dateObj, city.lat, city.lng, city.timezone);
+        currentAstroData = liveAstro;
+
+        let effectiveAltRad = liveAstro.solarAltitudeRad;
+        let isRising = liveAstro.solarAzimuth <= 180;
+
+        if (selectedTimePhase === 'night') {
+          effectiveAltRad = -0.35;
+          isRising = false;
+        } else if (selectedTimePhase === 'day') {
+          effectiveAltRad = 0.55;
+          isRising = true;
+        }
+
+        const dynamicSkyGrad = computeSkyGradient(effectiveAltRad, isRising, currentWeatherEffect);
+
+        const stageEl = document.getElementById('stage');
+        if (stageEl) {
+          stageEl.classList.remove('is-rainy', 'is-storm', 'is-snowy', 'is-sunny', 'is-cloudy', 'is-foggy');
+          stageEl.classList.remove('is-day-stage', 'is-dawn-stage', 'is-sunset-stage', 'is-dusk-stage', 'is-night-stage');
+
+          stageEl.classList.add(`is-${timeInfo.phase}-stage`);
+
+          if (currentWeatherEffect === 'rain') stageEl.classList.add('is-rainy');
+          else if (currentWeatherEffect === 'storm') stageEl.classList.add('is-storm');
+          else if (currentWeatherEffect === 'snow') stageEl.classList.add('is-snowy');
+          else if (currentWeatherEffect === 'cloudy') stageEl.classList.add('is-cloudy');
+          else if (currentWeatherEffect === 'sunny') stageEl.classList.add('is-sunny');
+          else if (currentWeatherEffect === 'fog' || currentWeatherEffect === 'mist') stageEl.classList.add('is-foggy');
+
+          stageEl.style.setProperty('--bg-sky-gradient', dynamicSkyGrad);
+          stageEl.style.background = dynamicSkyGrad;
+        }
+
+        // Keep single unified background photo layer active without image swapping
+        const bgPhotoLayer = document.getElementById('bg-dynamic-photo');
+        if (bgPhotoLayer) {
+          bgPhotoLayer.classList.add('active');
+        }
+
+        // Set time phase color overlay
+        if (timePhaseTint) {
+          const phaseClass = targetBg === 'cloudy' ? 'phase-cloudy' : `phase-${timeInfo.phase}`;
+          timePhaseTint.className = `time-phase-tint ${phaseClass}`;
+        }
+
+        // Update Phase badge
+        const phaseIcons = {
+          dawn: '🌅',
+          day: '☀️',
+          sunset: '🌇',
+          dusk: '🌆',
+          night: '🌙'
+        };
+        if (phaseBadgeIcon) phaseBadgeIcon.textContent = phaseIcons[timeInfo.phase] || '☀️';
+        if (phaseBadgeText) phaseBadgeText.textContent = `${timeInfo.phaseName} (${timeInfo.timeString.slice(0, 5)})`;
+
+        // Update Header live clock
+        if (liveClockText) liveClockText.textContent = `🕒 ${timeInfo.timeString} • ${city.city}`;
+        if (headerLocationTag) headerLocationTag.textContent = city.city;
+
+        playWeatherSound(currentWeatherEffect);
+      }
+
+      function updateHero() {
+        const city = dynamicCities[activeCityIndex];
+        const dayData = city.days[activeDayIndex] || city.days[0];
+        const timeInfo = getCurrentCityTimeInfo();
+
+        const isNightMode = selectedTimePhase === 'night' ? true : (selectedTimePhase === 'day' ? false : timeInfo.isNight);
+
+        let headlineStr = dayData.headlineDay || city.headline;
+        let blurbStr = dayData.blurbDay || city.blurb;
+
+        if (isNightMode) {
+          headlineStr = dayData.headlineNight || city.headlineNight || `${city.city} uzra\nsokin tun`;
+          blurbStr = dayData.blurbNight || city.blurbNight || `Tunda salqin va sokin ob-havo, harorat ${formatTemp(dayData.nightTempC, isFahrenheit)}.`;
+        }
+
+        const parts = headlineStr.split('\n');
+        if (heroLn1) heroLn1.textContent = parts[0] || '';
+        if (heroLn2) heroLn2.textContent = parts[1] || '';
+
+        if (heroBlurb) heroBlurb.textContent = blurbStr;
+
+        // Evening / Night Weather Card DIRECTLY UNDERNEATH
+        if (eveningCardTemp) eveningCardTemp.textContent = formatTemp(dayData.nightTempC, isFahrenheit);
+        if (eveningCardBlurb) eveningCardBlurb.textContent = dayData.blurbNight || city.blurbNight;
+
+        // Main View Live Metrics Strip (Humidity, Wind Speed, Pressure)
+        const heroHumVal = document.getElementById('hero-humidity-val');
+        if (heroHumVal) heroHumVal.textContent = `${dayData.humidity ?? city.humidityPercent ?? 38}%`;
+
+        const heroWindVal = document.getElementById('hero-wind-val');
+        if (heroWindVal) heroWindVal.textContent = `${dayData.windSpeed ?? city.windKmh ?? 14} km/s`;
+
+        const heroPressVal = document.getElementById('hero-pressure-val');
+        if (heroPressVal) heroPressVal.textContent = `${city.pressureHpa ?? 1014} hPa`;
+
+        updateAtmosphere(timeInfo);
+      }
+
+      let inactivityResetTimer = null;
+      function scheduleResetToLive() {
+        if (inactivityResetTimer) clearTimeout(inactivityResetTimer);
+        inactivityResetTimer = window.setTimeout(() => {
+          isRealTimeSync = true;
+          manualDecimalHour = null;
+          selectedTimePhase = null;
+          activeDayIndex = 0;
+          if (toggleRealtimeBtn) {
+            toggleRealtimeBtn.textContent = 'JONLI VAQT';
+            toggleRealtimeBtn.style.background = 'rgba(76, 175, 80, 0.4)';
+            toggleRealtimeBtn.style.borderColor = '#4caf50';
+          }
+          if (settingsTimeSubtext) settingsTimeSubtext.textContent = "Hozirda real vaqt bilan sinxron";
+          updateHero();
+          renderForecastStrip();
+          renderRightRail();
+          updateAstronomicalTracker();
+          const timeInfo = getCurrentCityTimeInfo();
+          updateAtmosphere(timeInfo);
+        }, 5000);
+      }
+
+      function selectDayTier(idx, tierPhase) {
+        activeDayIndex = idx;
+        selectedTimePhase = tierPhase;
+        updateHero();
+        renderForecastStrip();
+        updateAstronomicalTracker();
+        scheduleResetToLive();
+      }
+
+      function selectDay(idx) {
+        activeDayIndex = idx;
+        selectedTimePhase = 'day';
+        updateHero();
+        renderForecastStrip();
+        updateAstronomicalTracker();
+        scheduleResetToLive();
+      }
+
+      // Render Forecast Strip with DAY ON TOP, NIGHT DIRECTLY BENEATH
+      function renderForecastStrip() {
+        const city = dynamicCities[activeCityIndex];
+        const days = city.days;
+        if (!tempsContainer || !daysContainer) return;
+
+        tempsContainer.innerHTML = '';
+        daysContainer.innerHTML = '';
+
+        days.forEach((dayData, idx) => {
+          const col = document.createElement('div');
+          col.className = `temp-col ${idx === activeDayIndex ? 'active' : ''}`;
+          col.setAttribute('title', `${dayData.dayName}: Kunduzgi ${formatTemp(dayData.dayTempC, isFahrenheit)}, Kechki ${formatTemp(dayData.nightTempC, isFahrenheit)}`);
+
+          const isDayActive = idx === activeDayIndex && (selectedTimePhase === 'day' || selectedTimePhase === null);
+          const isNightActive = idx === activeDayIndex && selectedTimePhase === 'night';
+
+          col.innerHTML = `
+            <div class="temp-day-tier ${isDayActive ? 'active-tier' : ''}" role="button" tabindex="0">
+              <span class="temp-tier-tag-day">Kunduz</span>
+              <div class="temp-day-val-box">
+                <span class="temp-val-day">${formatTemp(dayData.dayTempC, isFahrenheit)}</span>
+                <svg class="temp-icon"><use href="#${dayData.dayIcon || 'i-sun'}" /></svg>
+              </div>
+            </div>
+            <div class="temp-tier-divider"></div>
+            <div class="temp-night-tier ${isNightActive ? 'active-tier' : ''}" role="button" tabindex="0" title="Kechki / tungi harorat">
+              <span class="temp-tier-tag-night">Kechasi</span>
+              <div class="temp-night-val-box">
+                <svg class="temp-night-icon"><use href="#${dayData.nightIcon || 'i-moon'}" /></svg>
+                <span class="temp-val-night">${formatTemp(dayData.nightTempC, isFahrenheit)}</span>
+              </div>
+            </div>
+            <div class="temp-card-metrics" aria-label="Namlik va shamol">
+              <span class="metric-micro-chip chip-humidity" title="Namlik: ${dayData.humidity ?? 40}%">
+                <svg class="metric-micro-icon"><use href="#i-drop" /></svg>
+                <span>${dayData.humidity ?? 40}%</span>
+              </span>
+              <span class="metric-micro-chip chip-wind" title="Shamol: ${dayData.windSpeed ?? 14} km/s">
+                <svg class="metric-micro-icon"><use href="#i-wind" /></svg>
+                <span>${dayData.windSpeed ?? 14} k/s</span>
+              </span>
+            </div>
+          `;
+
+          const dayTier = col.querySelector('.temp-day-tier');
+          if (dayTier) {
+            dayTier.addEventListener('click', (e) => {
+              e.stopPropagation();
+              selectDayTier(idx, 'day');
+            });
+          }
+
+          const nightTier = col.querySelector('.temp-night-tier');
+          if (nightTier) {
+            nightTier.addEventListener('click', (e) => {
+              e.stopPropagation();
+              selectDayTier(idx, 'night');
+            });
+          }
+
+          tempsContainer.appendChild(col);
+
+          const dayBtn = document.createElement('button');
+          dayBtn.type = 'button';
+          dayBtn.className = `day-label ${idx === activeDayIndex ? 'on' : ''}`;
+          dayBtn.textContent = dayData.dayName;
+          dayBtn.setAttribute('title', `${dayData.dayName} kunini tanlash`);
+          dayBtn.addEventListener('click', () => selectDay(idx));
+          daysContainer.appendChild(dayBtn);
+        });
+
+        // Wave Chart (based on day temperatures)
+        const temps = days.map(d => d.dayTempC);
+        const { strokePath, fillPath } = buildWavePathForTemps(temps);
+        if (waveFillPath) waveFillPath.setAttribute('d', fillPath);
+        if (waveStrokeOuter) waveStrokeOuter.setAttribute('d', strokePath);
+        if (waveStrokeMid) waveStrokeMid.setAttribute('d', strokePath);
+        if (waveStrokeCore) waveStrokeCore.setAttribute('d', strokePath);
+      }
+
+      // =======================================================
+      // 1:1 ASTRONOMICAL SUN & MOON ORBIT TRACKING SYSTEM
+      // =======================================================
+      let currentAstroData = null;
+
+      function getCompassCardinal(deg) {
+        const d = ((deg % 360) + 360) % 360;
+        if (d >= 337.5 || d < 22.5) return "Shimol";
+        if (d < 67.5) return "Sh.-Sharq";
+        if (d < 112.5) return "Sharq";
+        if (d < 157.5) return "J.-Sharq";
+        if (d < 202.5) return "Janub";
+        if (d < 247.5) return "J.-G'arb";
+        if (d < 292.5) return "G'arb";
+        return "Sh.-G'arb";
+      }
+
+      function getEffectiveAstroDate() {
+        const now = new Date();
+        if (isRealTimeSync || manualDecimalHour === null) {
+          return now;
+        }
+        const h = Math.floor(manualDecimalHour);
+        const m = Math.floor((manualDecimalHour - h) * 60);
+        const testDate = new Date(now);
+        testDate.setHours(h, m, 0, 0);
+        return testDate;
+      }
+
+      function createAstroTrackerCard() {
+        const card = document.createElement('article');
+        card.className = 'card astro-module-card sheen';
+        card.id = 'astro-orbit-tracker-card';
+        card.setAttribute('aria-label', '1:1 Astronomik Quyosh va Oy orbitasi');
+
+        card.innerHTML = `
+          <div class="astro-header">
+            <div class="astro-badge-row">
+              <span class="astro-live-indicator"><span class="astro-live-dot" aria-hidden="true"></span> 1:1 REAL-TIME ASTRONOMIYA</span>
+              <span class="astro-city-coords" id="astro-coords-label">41.30° N, 69.24° E</span>
+            </div>
+            <div class="astro-title" id="astro-title-label">Quyosh va Oy orbitasi</div>
+            <div class="astro-status-sub" id="astro-status-sub">
+              <span>☀️</span>
+              <span id="astro-status-text">Astronomik hisob-kitob qilinmoqda...</span>
+            </div>
+          </div>
+
+          <!-- Smooth Sky Horizon Arc (180° East -> 90° Zenith -> 0° West) -->
+          <div class="astro-arc-container">
+            <svg id="astro-arc-svg" viewBox="0 0 280 120" class="astro-svg" preserveAspectRatio="xMidYMid meet">
+              <defs>
+                <filter id="sun-halo-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <filter id="moon-lunar-glow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+                <radialGradient id="sun-core-grad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffffff" />
+                  <stop offset="40%" stop-color="#fff59d" />
+                  <stop offset="80%" stop-color="#ffb300" />
+                  <stop offset="100%" stop-color="#ff8f00" />
+                </radialGradient>
+                <radialGradient id="sun-ring-grad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#ffe082" stop-opacity="0.65" />
+                  <stop offset="60%" stop-color="#ffb300" stop-opacity="0.25" />
+                  <stop offset="100%" stop-color="#ff9800" stop-opacity="0" />
+                </radialGradient>
+                <radialGradient id="moon-disc-grad" cx="40%" cy="35%" r="60%">
+                  <stop offset="0%" stop-color="#f8fafc" />
+                  <stop offset="70%" stop-color="#cbd5e1" />
+                  <stop offset="100%" stop-color="#94a3b8" />
+                </radialGradient>
+                <radialGradient id="moon-shadow-mask-grad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#0f172a" stop-opacity="0.94" />
+                  <stop offset="100%" stop-color="#04121b" stop-opacity="0.98" />
+                </radialGradient>
+                <linearGradient id="astro-arc-trace-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="rgba(255, 179, 0, 0.55)" />
+                  <stop offset="50%" stop-color="rgba(255, 255, 255, 0.95)" />
+                  <stop offset="100%" stop-color="rgba(255, 112, 67, 0.55)" />
+                </linearGradient>
+                <linearGradient id="astro-ground-line-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="transparent" />
+                  <stop offset="15%" stop-color="rgba(255, 255, 255, 0.35)" />
+                  <stop offset="85%" stop-color="rgba(255, 255, 255, 0.35)" />
+                  <stop offset="100%" stop-color="transparent" />
+                </linearGradient>
+              </defs>
+
+              <line x1="16" y1="98" x2="264" y2="98" stroke="url(#astro-ground-line-grad)" stroke-width="1.2" stroke-dasharray="3 3" />
+              <text x="18" y="112" class="astro-cardinal-text">180° Sharq</text>
+              <text x="140" y="16" text-anchor="middle" class="astro-cardinal-text">90° Zenit</text>
+              <text x="262" y="112" text-anchor="end" class="astro-cardinal-text">0° G'arb</text>
+
+              <path id="astro-trajectory-arc" d="M 20,98 C 36,24 244,24 260,98" fill="none" stroke="rgba(255, 255, 255, 0.16)" stroke-width="2.5" stroke-dasharray="4 4" />
+              <path id="astro-active-trace" d="M 20,98 C 36,24 244,24 260,98" fill="none" stroke="url(#astro-arc-trace-grad)" stroke-width="3" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="0.5" />
+
+              <g id="astro-celestial-body" class="celestial-body-group" transform="translate(140, 26)">
+                <g id="astro-sun-render" class="sun-render">
+                  <circle cx="0" cy="0" r="24" fill="url(#sun-ring-grad)" class="sun-pulse-ring" />
+                  <circle cx="0" cy="0" r="14" fill="url(#sun-core-grad)" filter="url(#sun-halo-glow)" />
+                  <circle cx="0" cy="0" r="7" fill="#ffffff" />
+                  <line x1="-10" y1="0" x2="10" y2="0" stroke="rgba(255,245,157,0.85)" stroke-width="1.5" />
+                  <line x1="0" y1="-10" x2="0" y2="10" stroke="rgba(255,245,157,0.85)" stroke-width="1.5" />
+                </g>
+
+                <g id="astro-moon-render" class="moon-render" style="display:none;">
+                  <circle cx="0" cy="0" r="16" fill="rgba(203, 213, 225, 0.2)" filter="url(#moon-lunar-glow)" />
+                  <circle cx="0" cy="0" r="10" fill="url(#moon-disc-grad)" />
+                  <path id="astro-moon-shadow" class="astro-moon-shadow-path" fill="url(#moon-shadow-mask-grad)" d="" />
+                  <circle cx="-2" cy="-2" r="1.3" fill="rgba(100, 116, 139, 0.35)" />
+                  <circle cx="2" cy="3" r="1.8" fill="rgba(100, 116, 139, 0.3)" />
+                  <circle cx="3" cy="-2" r="1.1" fill="rgba(100, 116, 139, 0.25)" />
+                </g>
+              </g>
+            </svg>
+          </div>
+
+          <div class="astro-metrics-grid">
+            <div class="astro-metric-cell">
+              <div class="astro-metric-label">🌅 Quyosh chiqishi</div>
+              <div class="astro-metric-value" id="astro-sunrise-val">--:--</div>
+              <div class="astro-metric-sub">180° Sharqiy ufq</div>
+            </div>
+            <div class="astro-metric-cell">
+              <div class="astro-metric-label">☀️ Quyosh zeniti</div>
+              <div class="astro-metric-value" id="astro-noon-val">--:--</div>
+              <div class="astro-metric-sub">Peshin kulminatsiyasi</div>
+            </div>
+            <div class="astro-metric-cell">
+              <div class="astro-metric-label">🌇 Quyosh botishi</div>
+              <div class="astro-metric-value" id="astro-sunset-val">--:--</div>
+              <div class="astro-metric-sub">0° G'arbiy ufq</div>
+            </div>
+            <div class="astro-metric-cell">
+              <div class="astro-metric-label">🌙 Oy yoritilishi</div>
+              <div class="astro-metric-value" id="astro-moon-val">--%</div>
+              <div class="astro-metric-sub" id="astro-moon-phase-name">Hisoblanmoqda</div>
+            </div>
+          </div>
+
+          <div class="astro-angles-bar">
+            <div><span>📐 Balandlik: </span><b id="astro-altitude-val">0°</b></div>
+            <div><span>🧭 Azimut: </span><b id="astro-azimuth-val">0°</b></div>
+            <div><b id="astro-cycle-state">Traektoriya</b></div>
+          </div>
+        `;
+
+        return card;
+      }
+
+      function updateAstronomicalTracker() {
+        const city = dynamicCities[activeCityIndex];
+        if (!city) return;
+        const dateObj = getEffectiveAstroDate();
+        const astro = calculateAstronomicalOrbit(dateObj, city.lat, city.lng, city.timezone);
+        currentAstroData = astro;
+
+        const coordsLabel = document.getElementById('astro-coords-label');
+        if (coordsLabel) {
+          const latText = astro.lat >= 0 ? `${astro.lat.toFixed(2)}° N` : `${Math.abs(astro.lat).toFixed(2)}° S`;
+          const lngText = astro.lng >= 0 ? `${astro.lng.toFixed(2)}° E` : `${Math.abs(astro.lng).toFixed(2)}° W`;
+          coordsLabel.textContent = `${latText}, ${lngText}`;
+        }
+
+        const statusTextEl = document.getElementById('astro-status-text');
+        if (statusTextEl) statusTextEl.textContent = astro.statusText;
+
+        const sunriseVal = document.getElementById('astro-sunrise-val');
+        if (sunriseVal) sunriseVal.textContent = astro.sunriseTimeStr;
+
+        const noonVal = document.getElementById('astro-noon-val');
+        if (noonVal) noonVal.textContent = astro.solarNoonTimeStr;
+
+        const sunsetVal = document.getElementById('astro-sunset-val');
+        if (sunsetVal) sunsetVal.textContent = astro.sunsetTimeStr;
+
+        const moonVal = document.getElementById('astro-moon-val');
+        if (moonVal) moonVal.textContent = `${astro.moonIlluminationPercent}%`;
+
+        const moonPhaseName = document.getElementById('astro-moon-phase-name');
+        if (moonPhaseName) moonPhaseName.textContent = astro.moonPhaseName;
+
+        const altVal = document.getElementById('astro-altitude-val');
+        if (altVal) altVal.textContent = `${astro.activeAltitude > 0 ? '+' : ''}${astro.activeAltitude}°`;
+
+        const azVal = document.getElementById('astro-azimuth-val');
+        if (azVal) azVal.textContent = `${astro.activeAzimuth}° (${getCompassCardinal(astro.activeAzimuth)})`;
+
+        const cycleState = document.getElementById('astro-cycle-state');
+        if (cycleState) cycleState.textContent = astro.isDay ? 'Kunduzgi quyosh traektoriyasi' : 'Tungi oy traektoriyasi';
+
+        const angle = Math.PI * (1 - astro.arcProgress);
+        const cx = Math.round(140 - 120 * Math.cos(angle));
+        const cy = Math.round(98 - 72 * Math.sin(angle));
+
+        const celestialBodyGroup = document.getElementById('astro-celestial-body');
+        if (celestialBodyGroup) {
+          celestialBodyGroup.style.transform = `translate(${cx}px, ${cy}px)`;
+        }
+
+        const activeTrace = document.getElementById('astro-active-trace');
+        if (activeTrace) {
+          activeTrace.style.strokeDashoffset = (1 - astro.arcProgress).toFixed(3);
+        }
+
+        const sunRender = document.getElementById('astro-sun-render');
+        const moonRender = document.getElementById('astro-moon-render');
+
+        if (astro.isDay) {
+          if (sunRender) sunRender.style.display = 'block';
+          if (moonRender) moonRender.style.display = 'none';
+        } else {
+          if (sunRender) sunRender.style.display = 'none';
+          if (moonRender) {
+            moonRender.style.display = 'block';
+            const moonPaths = computeMoonSvgPaths(astro.moonPhase, 10);
+            const moonShadowPath = document.getElementById('astro-moon-shadow');
+            if (moonShadowPath) {
+              moonShadowPath.setAttribute('d', moonPaths.shadowPath);
+            }
+          }
+        }
+      }
+
+      // Render Right Rail Cards with Day on Top, Night Beneath
+      function renderRightRail() {
+        if (!cardsRail) return;
+        cardsRail.innerHTML = '';
+        const currentActiveCity = dynamicCities[activeCityIndex];
+        const timeInfo = getCurrentCityTimeInfo();
+
+        // Card A: Active City Card
+        const cardA = document.createElement('article');
+        cardA.className = 'card big sheen active-card';
+        cardA.setAttribute('title', `Hozir ko'rilayotgan shahar: ${currentActiveCity.city}`);
+
+        const mainDisplayTemp = timeInfo.isNight ? currentActiveCity.nightTempC : currentActiveCity.tempC;
+
+        cardA.innerHTML = `
+          <div>
+            <div class="place-row">
+              <span class="place-name">${currentActiveCity.city}</span>
+              <svg class="place-pin"><use href="#i-pin" /></svg>
+            </div>
+            <div class="big-temp-wrap">
+              <div class="big-temp" id="active-big-temp" title="Birlikni o'zgartirish (°C / °F)">
+                ${formatTemp(mainDisplayTemp, isFahrenheit)}<i>${isFahrenheit ? 'F' : 'C'}</i>
+              </div>
+              <div class="dual-temp-stack" title="Kunduzgi va tungi ko'rsatkichlar">
+                <div class="dual-temp-item dual-temp-day">
+                  <span>☀️ Kunduz:</span>
+                  <span>${formatTemp(currentActiveCity.tempC, isFahrenheit)}</span>
+                </div>
+                <div class="dual-temp-item dual-temp-night">
+                  <span>🌙 Kechasi:</span>
+                  <span>${formatTemp(currentActiveCity.nightTempC, isFahrenheit)}</span>
+                </div>
+              </div>
+            </div>
+            <div class="sun-arc-meter" title="Quyosh chiqishi va botishi">
+              <span>🌅 ${currentActiveCity.sunriseTime}</span>
+              <span style="color:#ffd54f;">${timeInfo.isNight ? '🌙 Oy fazasi' : '☀️ Quyosh fazasi'} (${timeInfo.phaseName})</span>
+              <span>🌇 ${currentActiveCity.sunsetTime}</span>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-item" title="Shamol tezligi">
+              <svg class="metric-icon"><use href="#i-wind" /></svg>
+              <span>${currentActiveCity.windKmh} km/s</span>
+            </div>
+            <div class="metric-item" title="Namlik darajasi">
+              <svg class="metric-icon"><use href="#i-drop" /></svg>
+              <span>${currentActiveCity.humidityPercent}%</span>
+            </div>
+            <div class="metric-item" title="Atmosfera bosimi">
+              <svg class="metric-icon"><use href="#i-gust" /></svg>
+              <span>${currentActiveCity.pressureHpa} hPa</span>
+            </div>
+          </div>
+        `;
+
+        const activeBigTempBtn = cardA.querySelector('#active-big-temp');
+        if (activeBigTempBtn) {
+          activeBigTempBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleTempUnit();
+          });
+        }
+
+        cardsRail.appendChild(cardA);
+
+        // Append Astronomical Module
+        const astroCard = createAstroTrackerCard();
+        cardsRail.appendChild(astroCard);
+        updateAstronomicalTracker();
+
+      }
+
+      async function syncLiveWeatherForCity(city) {
+        const apiChipText = document.getElementById('header-api-status-text');
+        if (apiChipText) apiChipText.textContent = "Open-Meteo API: Sinxronlanmoqda...";
+
+        const liveData = await fetchLiveMeteoWeather(city.lat, city.lng);
+        if (liveData) {
+          city.tempC = liveData.currentTemp;
+          city.humidityPercent = liveData.humidity;
+          city.windKmh = liveData.windSpeed;
+          city.pressureHpa = liveData.pressure;
+          city.weatherEffect = liveData.weatherEffect;
+          city.condition = liveData.conditionName;
+
+          if (liveData.dailyMax && liveData.dailyMax.length > 0) {
+            liveData.dailyMax.forEach((max, idx) => {
+              if (city.days[idx]) {
+                city.days[idx].dayTempC = max;
+                if (liveData.dailyMin && liveData.dailyMin[idx] !== undefined) {
+                  city.days[idx].nightTempC = liveData.dailyMin[idx];
+                }
+                if (liveData.dailyHumidity && liveData.dailyHumidity[idx] !== undefined) {
+                  city.days[idx].humidity = liveData.dailyHumidity[idx];
+                }
+                if (liveData.dailyWindSpeed && liveData.dailyWindSpeed[idx] !== undefined) {
+                  city.days[idx].windSpeed = liveData.dailyWindSpeed[idx];
+                }
+              }
+            });
+          }
+
+          if (apiChipText) {
+            apiChipText.textContent = `Open-Meteo Jonli API (${liveData.lastUpdated})`;
+            apiChipText.style.color = "#00e676";
+          }
+
+          const reportApiDesc = document.getElementById('report-api-status-desc');
+          if (reportApiDesc) {
+            reportApiDesc.textContent = `Sun'iy yo'ldosh real vaqt harorati: ${liveData.currentTemp}°C, namlik: ${liveData.humidity}%`;
+          }
+
+          updateHero();
+          renderRightRail();
+          renderForecastStrip();
+        } else {
+          if (apiChipText) {
+            apiChipText.textContent = "Open-Meteo API: Tayyor 🟢";
+            apiChipText.style.color = "#81c784";
+          }
+        }
+      }
+
+      function switchCity(index) {
+        if (index < 0 || index >= dynamicCities.length) return;
+        activeCityIndex = index;
+        activeDayIndex = 0;
+        const city = dynamicCities[activeCityIndex];
+
+        saveSearchHistory(city.city);
+        document.title = `Ob-havo ma'lumoti — ${city.city}`;
+
+        updateHero();
+        renderRightRail();
+        renderForecastStrip();
+
+        syncLiveWeatherForCity(city);
+      }
+
+      function toggleTempUnit() {
+        isFahrenheit = !isFahrenheit;
+        if (toggleTempUnitBtn) toggleTempUnitBtn.textContent = isFahrenheit ? '°F' : '°C';
+        renderRightRail();
+        renderForecastStrip();
+        updateHero();
+      }
+
+      // ==========================================
+      // INSTANT AUTOCOMPLETE & STRICT SEARCH (INLINE VIEW)
+      // ==========================================
+      const inlineSearchInput = document.getElementById('inline-input-city-search');
+      const inlineAutocompleteBox = document.getElementById('inline-autocomplete-box');
+      const inlineAutocompleteList = document.getElementById('inline-search-autocomplete-list');
+      const inlineHistoryChipsContainer = document.getElementById('inline-search-history-chips');
+      const inlineBtnClearHistory = document.getElementById('inline-btn-clear-history');
+
+      function highlightMatch(text, query) {
+        if (!query) return text;
+        const q = query.toLowerCase();
+        const idx = text.toLowerCase().indexOf(q);
+        if (idx === -1) return text;
+        return (
+          text.substring(0, idx) +
+          `<mark>${text.substring(idx, idx + q.length)}</mark>` +
+          text.substring(idx + q.length)
+        );
+      }
+
+      function handleInlineSearchInput() {
+        if (!inlineSearchInput) return;
+        const val = inlineSearchInput.value.trim();
+        if (!val) {
+          if (inlineAutocompleteBox) inlineAutocompleteBox.style.display = 'none';
+          if (inlineAutocompleteList) inlineAutocompleteList.innerHTML = '';
+          return;
+        }
+
+        const matches = searchLocations(val, 8);
+        if (matches.length === 0) {
+          if (inlineAutocompleteBox) inlineAutocompleteBox.style.display = 'block';
+          if (inlineAutocompleteList) {
+            inlineAutocompleteList.innerHTML = `
+              <div style="padding:calc(12*var(--u)); font-size:calc(13*var(--u)); color:#ef5350; text-align:center; font-weight:600;">
+                ❌ "${val}" bo'yicha joy topilmadi.<br/>
+                <span style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.7); font-weight:400;">
+                  Faqat mavjud O'zbekiston viloyat, tuman va shaharlari qidiriladi.
+                </span>
+              </div>
+            `;
+          }
+          return;
+        }
+
+        if (inlineAutocompleteBox) inlineAutocompleteBox.style.display = 'block';
+        if (inlineAutocompleteList) inlineAutocompleteList.innerHTML = '';
+
+        matches.forEach(cityItem => {
+          const item = document.createElement('div');
+          item.className = 'rec-item';
+          item.setAttribute('role', 'button');
+          item.setAttribute('tabindex', '0');
+
+          const dayT = formatTemp(cityItem.tempC, isFahrenheit);
+          const nightT = formatTemp(cityItem.nightTempC, isFahrenheit);
+
+          item.innerHTML = `
+            <div>
+              <div class="rec-city-name">${highlightMatch(cityItem.city, val)}</div>
+              <div class="rec-region">${cityItem.region}, ${cityItem.country} • ${cityItem.condition}</div>
+            </div>
+            <div class="rec-right">
+              <div style="text-align:right;">
+                <div class="rec-temp">☀️ ${dayT}</div>
+                <div style="font-size:calc(11.5*var(--u)); color:#90caf9;">🌙 ${nightT}</div>
+              </div>
+              <svg class="rec-icon"><use href="#${cityItem.icon}" /></svg>
+            </div>
+          `;
+
+          const selectThisCity = () => {
+            let idx = dynamicCities.findIndex(c => c.id === cityItem.id || c.city.toLowerCase() === cityItem.city.toLowerCase());
+            if (idx === -1) {
+              const full = getFullCityData(cityItem);
+              dynamicCities.push(full);
+              idx = dynamicCities.length - 1;
+            }
+            switchCity(idx);
+            inlineSearchInput.value = '';
+            if (inlineAutocompleteBox) inlineAutocompleteBox.style.display = 'none';
+            showInlineView('view-dashboard');
+          };
+
+          item.addEventListener('click', selectThisCity);
+          item.addEventListener('keydown', (ke) => {
+            if (ke.key === 'Enter') selectThisCity();
+          });
+
+          if (inlineAutocompleteList) inlineAutocompleteList.appendChild(item);
+        });
+      }
+
+      if (inlineSearchInput) {
+        inlineSearchInput.addEventListener('input', handleInlineSearchInput);
+
+        inlineSearchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const query = inlineSearchInput.value.trim();
+            if (!query) return;
+
+            const matches = searchLocations(query, 1);
+            if (matches.length > 0) {
+              let foundIdx = dynamicCities.findIndex(c => c.id === matches[0].id || c.city.toLowerCase() === matches[0].city.toLowerCase());
+              if (foundIdx === -1) {
+                dynamicCities.push(getFullCityData(matches[0]));
+                foundIdx = dynamicCities.length - 1;
+              }
+              switchCity(foundIdx);
+              inlineSearchInput.value = '';
+              if (inlineAutocompleteBox) inlineAutocompleteBox.style.display = 'none';
+              showInlineView('view-dashboard');
+            } else {
+              if (inlineAutocompleteBox) inlineAutocompleteBox.style.display = 'block';
+              if (inlineAutocompleteList) {
+                inlineAutocompleteList.innerHTML = `
+                  <div style="padding:calc(12*var(--u)); font-size:calc(13*var(--u)); color:#ef5350; text-align:center; font-weight:600;">
+                    ❌ "${query}" nomli shahar yoki tuman topilmadi.<br/>
+                    <span style="font-size:calc(11.5*var(--u)); color:rgba(255,255,255,.7); font-weight:400;">
+                      Iltimos, faqat mavjud O'zbekiston tuman va shaharlaridan kiriting.
+                    </span>
+                  </div>
+                `;
+              }
+            }
+          }
+        });
+      }
+
+      function renderInlineSearchHistory() {
+        const history = getSearchHistory();
+        if (!inlineHistoryChipsContainer) return;
+        inlineHistoryChipsContainer.innerHTML = '';
+        if (history.length === 0) {
+          inlineHistoryChipsContainer.innerHTML = '<span style="font-size:calc(12*var(--u)); opacity:0.6;">Saqlangan qidiruvlar mavjud emas</span>';
+          return;
+        }
+
+        history.forEach(cityName => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'city-chip';
+          chip.innerHTML = `<span>📍 ${cityName}</span>`;
+          chip.addEventListener('click', () => {
+            let idx = dynamicCities.findIndex(c => c.city.toLowerCase() === cityName.toLowerCase());
+            if (idx === -1) {
+              const matched = searchLocations(cityName, 1)[0];
+              if (matched) {
+                dynamicCities.push(getFullCityData(matched));
+                idx = dynamicCities.length - 1;
+              }
+            }
+            if (idx !== -1) {
+              switchCity(idx);
+              showInlineView('view-dashboard');
+            }
+          });
+          inlineHistoryChipsContainer.appendChild(chip);
+        });
+      }
+
+      if (inlineBtnClearHistory) {
+        inlineBtnClearHistory.addEventListener('click', () => {
+          try {
+            localStorage.removeItem('aurora_weather_search_history_v2');
+          } catch {}
+          renderInlineSearchHistory();
+        });
+      }
+
+      function populateInlinePresetChips() {
+        const chipContainer = document.getElementById('inline-search-chips-container');
+        if (!chipContainer) return;
+        chipContainer.innerHTML = '';
+        const presets = [
+          { name: "Toshkent (Quyosh)", id: "toshkent" },
+          { name: "Chimyon (Qor ❄️)", id: "chimyon" },
+          { name: "Nukus (Shamol 💨)", id: "nukus" },
+          { name: "Jakarta (Bo'ron ⛈️)", id: "central-jakarta" },
+          { name: "London (Yomg'ir 🌧️)", id: "london" },
+          { name: "Samarqand", id: "samarqand" },
+          { name: "Buxoro", id: "buxoro" },
+          { name: "Marg'ilon", id: "margilon" },
+          { name: "Qo'qon", id: "qoqon" },
+          { name: "Denov", id: "denov" },
+          { name: "Zomin", id: "zomin" },
+          { name: "Xiva", id: "xiva" }
+        ];
+
+        presets.forEach(p => {
+          const chip = document.createElement('button');
+          chip.type = 'button';
+          chip.className = 'city-chip';
+          chip.textContent = p.name;
+          chip.addEventListener('click', () => {
+            let idx = dynamicCities.findIndex(c => c.id === p.id);
+            if (idx !== -1) {
+              switchCity(idx);
+              showInlineView('view-dashboard');
+            }
+          });
+          chipContainer.appendChild(chip);
+        });
+      }
+
+      function populateInlineExplorer(regionFilter = 'all') {
+        const exploreList = document.getElementById('inline-explore-list');
+        if (!exploreList) return;
+        exploreList.innerHTML = '';
+
+        let filtered = CITIES_DATABASE;
+        if (regionFilter === 'toshkent') {
+          filtered = CITIES_DATABASE.filter(c => c.districtOf === "Toshkent viloyati" || c.id === 'toshkent');
+        } else if (regionFilter === 'vodiy') {
+          filtered = CITIES_DATABASE.filter(c => c.districtOf?.includes('Farg') || c.districtOf?.includes('Andijon') || c.districtOf?.includes('Namangan') || c.id === 'fargona' || c.id === 'andijon' || c.id === 'namangan');
+        } else if (regionFilter === 'samarqand') {
+          filtered = CITIES_DATABASE.filter(c => c.districtOf?.includes('Samarqand') || c.districtOf?.includes('Buxoro') || c.id === 'samarqand' || c.id === 'buxoro');
+        } else if (regionFilter === 'janub') {
+          filtered = CITIES_DATABASE.filter(c => c.districtOf?.includes('Surxon') || c.districtOf?.includes('Qashqa') || c.id === 'termiz' || c.id === 'qarshi');
+        } else if (regionFilter === 'chol') {
+          filtered = CITIES_DATABASE.filter(c => c.districtOf?.includes('Navoiy') || c.districtOf?.includes('Qoraqal') || c.id === 'nukus' || c.id === 'navoiy');
+        } else if (regionFilter === 'global') {
+          filtered = CITIES_DATABASE.filter(c => c.country !== "O'zbekiston");
+        }
+
+        filtered.forEach(c => {
+          const row = document.createElement('div');
+          row.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:calc(10*var(--u)) calc(14*var(--u)); background:rgba(255,255,255,.12); border-radius:calc(14*var(--u)); border:1px solid rgba(255,255,255,.18); cursor:pointer; transition:background 0.2s;";
+          const timeInfo = getLocalTimeForTimezone(c.timezone, new Date(), c.sunriseTime, c.sunsetTime);
+
+          row.innerHTML = `
+            <div>
+              <div style="font-weight:700; font-size:calc(14.5*var(--u));">${c.city}</div>
+              <div style="font-size:calc(12*var(--u)); color:rgba(255,255,255,.75);">${c.region} • ${c.condition}</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:calc(10*var(--u));">
+              <span style="font-size:calc(12.5*var(--u)); color:#a5d6a7;">🕒 ${timeInfo.timeString.slice(0, 5)}</span>
+              <span style="font-size:calc(16*var(--u)); font-weight:700;">☀️ ${formatTemp(c.tempC, isFahrenheit)}</span>
+              <svg style="width:calc(18*var(--u)); height:calc(18*var(--u)); fill:#fff;"><use href="#${c.icon}" /></svg>
+            </div>
+          `;
+          row.addEventListener('click', () => {
+            let idx = dynamicCities.findIndex(dc => dc.id === c.id || dc.city.toLowerCase() === c.city.toLowerCase());
+            if (idx === -1) {
+              dynamicCities.push(getFullCityData(c));
+              idx = dynamicCities.length - 1;
+            }
+            switchCity(idx);
+            showInlineView('view-dashboard');
+          });
+          exploreList.appendChild(row);
+        });
+      }
+
+      // Filter tabs in inline explore
+      const exploreFilterTabs = document.getElementById('explore-filter-tabs');
+      if (exploreFilterTabs) {
+        exploreFilterTabs.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+            exploreFilterTabs.querySelectorAll('button').forEach(b => {
+              b.style.background = 'rgba(255,255,255,.15)';
+              b.style.borderColor = 'rgba(255,255,255,.22)';
+            });
+            btn.style.background = 'rgba(255,255,255,.32)';
+            btn.style.borderColor = '#fff';
+            const region = btn.getAttribute('data-region') || 'all';
+            populateInlineExplorer(region);
+          });
+        });
+      }
+
+      function populateInlineCalendar() {
+        const calList = document.getElementById('inline-calendar-list');
+        if (!calList) return;
+        calList.innerHTML = '';
+        const dayNames = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"];
+        const conditions = [
+          { cond: "Quyoshli va musaffo osmon", icon: "i-sun" },
+          { cond: "Yengil bulutli va mayin shabada", icon: "i-cloud2" },
+          { cond: "Qalin va salqin bulutli", icon: "i-cloud" },
+          { cond: "Kuzgi shabnam va yomg'ir", icon: "i-hail" },
+          { cond: "Momaqaldiroqli bo'ron va jala", icon: "i-hail" },
+        ];
+
+        const activeCity = dynamicCities[activeCityIndex];
+
+        for (let i = 0; i < 14; i++) {
+          const date = new Date();
+          date.setDate(date.getDate() + i);
+          const dayName = dayNames[date.getDay()];
+          const dateStr = date.toLocaleDateString('uz-UZ', { month: 'short', day: 'numeric' });
+          const condItem = conditions[i % conditions.length];
+          const highC = activeCity.tempC - Math.floor(i / 3) + (i % 2 === 0 ? 1 : -1);
+          const lowC = Math.max(2, highC - 10);
+
+          const row = document.createElement('div');
+          row.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:calc(10*var(--u)) calc(14*var(--u)); background:rgba(255,255,255,.1); border-radius:calc(14*var(--u)); border:1px solid rgba(255,255,255,.14);";
+          row.innerHTML = `
+            <div style="display:flex; align-items:center; gap:calc(12*var(--u));">
+              <span style="font-weight:700; min-width:calc(85*var(--u)); font-size:calc(13.5*var(--u));">${dayName}</span>
+              <span style="font-size:calc(12*var(--u)); opacity:.75;">${dateStr}</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:calc(14*var(--u));">
+              <span style="font-size:calc(12.5*var(--u)); color:rgba(255,255,255,.85);">${condItem.cond}</span>
+              <svg style="width:calc(18*var(--u)); height:calc(18*var(--u)); fill:#fff;"><use href="#${condItem.icon}" /></svg>
+              <span style="font-weight:700; font-size:calc(13.5*var(--u));">☀️ ${formatTemp(highC, isFahrenheit)} / <span style="color:#90caf9;">🌙 ${formatTemp(lowC, isFahrenheit)}</span></span>
+            </div>
+          `;
+          calList.appendChild(row);
+        }
+      }
+
+      // Quick time travel buttons in Settings
+      document.querySelectorAll('[data-time]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const t = parseFloat(btn.getAttribute('data-time'));
+          manualDecimalHour = t;
+          isRealTimeSync = false;
+          if (toggleRealtimeBtn) {
+            toggleRealtimeBtn.textContent = 'QO\'LDA TANLANGAN';
+            toggleRealtimeBtn.style.background = 'rgba(255, 152, 0, 0.4)';
+            toggleRealtimeBtn.style.borderColor = '#ff9800';
+          }
+          if (settingsTimeSubtext) settingsTimeSubtext.textContent = `Qo'lda belgilangan soat: ${t.toFixed(2)}`;
+
+          const timeInfo = getCurrentCityTimeInfo();
+          updateAtmosphere(timeInfo);
+          renderRightRail();
+        });
+      });
+
+      if (toggleRealtimeBtn) {
+        toggleRealtimeBtn.addEventListener('click', () => {
+          isRealTimeSync = true;
+          manualDecimalHour = null;
+          toggleRealtimeBtn.textContent = 'JONLI VAQT';
+          toggleRealtimeBtn.style.background = 'rgba(76, 175, 80, 0.4)';
+          toggleRealtimeBtn.style.borderColor = '#4caf50';
+          if (settingsTimeSubtext) settingsTimeSubtext.textContent = 'Hozirda real vaqt bilan sinxron';
+
+          const timeInfo = getCurrentCityTimeInfo();
+          updateAtmosphere(timeInfo);
+          renderRightRail();
+        });
+      }
+
+      // Header tools button listeners
+      const btnSoundToggle = document.getElementById('btn-sound-toggle');
+      const soundToggleSvg = document.getElementById('sound-toggle-svg');
+      if (btnSoundToggle) {
+        btnSoundToggle.addEventListener('click', () => {
+          initAudioEngine();
+          const isMutedNow = toggleMute();
+          if (soundToggleSvg) {
+            soundToggleSvg.querySelector('use').setAttribute('href', isMutedNow ? '#i-volume-off' : '#i-volume-on');
+          }
+          btnSoundToggle.style.background = isMutedNow ? '' : 'rgba(76, 175, 80, 0.38)';
+          btnSoundToggle.style.borderColor = isMutedNow ? '' : '#4caf50';
+        });
+      }
+
+      const btnSearch = document.getElementById('btn-search');
+      if (btnSearch) {
+        btnSearch.addEventListener('click', () => {
+          renderInlineSearchHistory();
+          populateInlinePresetChips();
+          showInlineView('view-search');
+          const inlineInput = document.getElementById('inline-input-city-search');
+          if (inlineInput) setTimeout(() => inlineInput.focus(), 150);
+        });
+      }
+
+      const btnNotifications = document.getElementById('btn-notifications');
+      if (btnNotifications) {
+        btnNotifications.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (popoverNotif) popoverNotif.classList.toggle('open');
+        });
+      }
+
+      const btnClearNotif = document.getElementById('btn-clear-notif');
+      if (btnClearNotif) {
+        btnClearNotif.addEventListener('click', () => {
+          document.querySelectorAll('.badge').forEach(b => b.style.display = 'none');
+          if (popoverNotif) popoverNotif.classList.remove('open');
+        });
+      }
+
+      const headerAvatar = document.getElementById('header-avatar');
+      if (headerAvatar) headerAvatar.addEventListener('click', () => openModal('profile'));
+
+      const headerUser = document.getElementById('header-user');
+      if (headerUser) headerUser.addEventListener('click', () => openModal('profile'));
+
+      const btnForecastChip = document.getElementById('btn-forecast-chip');
+      if (btnForecastChip) {
+        btnForecastChip.addEventListener('click', () => showInlineView('view-reports'));
+      }
+
+      // Sidebar button listeners
+      function updateSidebarPip(topVal) {
+        if (sidebarPip) sidebarPip.style.top = `calc(${topVal} * var(--u))`;
+      }
+
+      const btnLogo = document.getElementById('btn-logo');
+      if (btnLogo) {
+        btnLogo.addEventListener('click', () => {
+          switchCity(0);
+          showInlineView('view-dashboard');
+        });
+      }
+
+      const navDashboard = document.getElementById('nav-dashboard');
+      if (navDashboard) {
+        navDashboard.addEventListener('click', () => showInlineView('view-dashboard'));
+      }
+
+      const navReports = document.getElementById('nav-reports');
+      if (navReports) {
+        navReports.addEventListener('click', () => showInlineView('view-reports'));
+      }
+
+      const navExplore = document.getElementById('nav-explore');
+      if (navExplore) {
+        navExplore.addEventListener('click', () => {
+          populateInlineExplorer('all');
+          showInlineView('view-explore');
+        });
+      }
+
+      const navCalendar = document.getElementById('nav-calendar');
+      if (navCalendar) {
+        navCalendar.addEventListener('click', () => {
+          populateInlineCalendar();
+          showInlineView('view-calendar');
+        });
+      }
+
+      const navSettings = document.getElementById('nav-settings');
+      if (navSettings) {
+        navSettings.addEventListener('click', () => showInlineView('view-settings'));
+      }
+
+      const btnLogout = document.getElementById('btn-logout');
+      if (btnLogout) {
+        btnLogout.addEventListener('click', () => openModal('profile'));
+      }
+
+      if (toggleTempUnitBtn) {
+        toggleTempUnitBtn.addEventListener('click', toggleTempUnit);
+      }
+
+      if (toggleLiveCanvasBtn) {
+        toggleLiveCanvasBtn.addEventListener('click', () => {
+          liveCanvasEnabled = !liveCanvasEnabled;
+          toggleLiveCanvasBtn.textContent = liveCanvasEnabled ? 'YONIQ' : "O'CHIQ";
+          toggleLiveCanvasBtn.style.background = liveCanvasEnabled ? 'rgba(76,175,80,.4)' : 'rgba(255,255,255,.2)';
+          toggleLiveCanvasBtn.style.borderColor = liveCanvasEnabled ? '#4caf50' : 'rgba(255,255,255,.3)';
+        });
+      }
+
+      const btnSyncNow = document.getElementById('btn-sync-now');
+      if (btnSyncNow) {
+        btnSyncNow.addEventListener('click', () => {
+          btnSyncNow.textContent = "Sun'iy yo'ldosh ma'lumotlari yangilanmoqda...";
+          syncLiveWeatherForCity(dynamicCities[activeCityIndex]);
+          setTimeout(() => {
+            btnSyncNow.textContent = "Ma'lumotlar yangilandi ✓";
+            setTimeout(() => btnSyncNow.textContent = "Meteo-sun'iy yo'ldosh ma'lumotlarini yangilash", 1800);
+          }, 700);
+        });
+      }
+
+      const btnDoLogout = document.getElementById('btn-do-logout');
+      if (btnDoLogout) {
+        btnDoLogout.addEventListener('click', () => {
+          btnDoLogout.textContent = "Chiqildi ✓ Qayta ulanmoqda...";
+          setTimeout(() => {
+            btnDoLogout.textContent = 'Hisobdan chiqish';
+            closeAllModals();
+          }, 1200);
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (popoverNotif && !popoverNotif.contains(e.target) && e.target !== document.getElementById('btn-notifications')) {
+          popoverNotif.classList.remove('open');
+        }
+      });
+
+      // =======================================================
+      // REAL-TIME LIVING CELESTIAL & WEATHER ANIMATION ENGINE
+      // =======================================================
+      const canvas = document.getElementById('weather-canvas');
+      const ctx = canvas ? canvas.getContext('2d') : null;
+      let width = window.innerWidth;
+      let height = window.innerHeight;
+
+      function resizeCanvas() {
+        if (!canvas) return;
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      // Particle Systems
+      const rainDrops = [];
+      for (let i = 0; i < 120; i++) {
+        rainDrops.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          length: 14 + Math.random() * 16,
+          speed: 9 + Math.random() * 9,
+          opacity: 0.2 + Math.random() * 0.4
+        });
+      }
+
+      const snowFlakes = [];
+      for (let i = 0; i < 90; i++) {
+        snowFlakes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: 1.5 + Math.random() * 3.5,
+          speedY: 0.8 + Math.random() * 1.6,
+          swingSpeed: 0.02 + Math.random() * 0.03,
+          swingRadius: 1 + Math.random() * 2,
+          phase: Math.random() * Math.PI * 2,
+          opacity: 0.35 + Math.random() * 0.55
+        });
+      }
+
+      const windParticles = [];
+      for (let i = 0; i < 45; i++) {
+        windParticles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          len: 40 + Math.random() * 90,
+          speedX: 12 + Math.random() * 16,
+          speedY: (Math.random() - 0.5) * 2,
+          opacity: 0.15 + Math.random() * 0.35,
+          size: 2 + Math.random() * 4,
+          isLeaf: Math.random() > 0.6
+        });
+      }
+
+      const sunMotes = [];
+      for (let i = 0; i < 40; i++) {
+        sunMotes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: 1.5 + Math.random() * 3,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: -0.3 - Math.random() * 0.4,
+          alpha: 0.2 + Math.random() * 0.5,
+          pulse: Math.random() * Math.PI
+        });
+      }
+
+      const stars = [];
+      for (let i = 0; i < 90; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * (height * 0.68),
+          radius: 0.8 + Math.random() * 1.6,
+          baseAlpha: 0.3 + Math.random() * 0.65,
+          speed: 0.02 + Math.random() * 0.04,
+          phase: Math.random() * Math.PI * 2
+        });
+      }
+
+      let meteor = null;
+      function spawnMeteor() {
+        meteor = {
+          x: Math.random() * (width * 0.8),
+          y: Math.random() * (height * 0.3),
+          len: 80 + Math.random() * 70,
+          speed: 12 + Math.random() * 8,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+          opacity: 1
+        };
+      }
+      setInterval(() => {
+        if (currentCelestialPhase === 'night' && Math.random() > 0.4 && !meteor) {
+          spawnMeteor();
+        }
+      }, 3500);
+
+      let lightningFlash = 0;
+      let lightningBolt = null;
+      function triggerLightning() {
+        lightningFlash = 0.85;
+        const startX = width * 0.2 + Math.random() * (width * 0.6);
+        const segments = [{ x: startX, y: 0 }];
+        let curX = startX;
+        let curY = 0;
+        const targetY = height * 0.65;
+        while (curY < targetY) {
+          curX += (Math.random() - 0.5) * 35;
+          curY += 15 + Math.random() * 25;
+          segments.push({ x: curX, y: curY });
+        }
+        lightningBolt = segments;
+      }
+      setInterval(() => {
+        if (currentWeatherEffect === 'storm' && Math.random() > 0.35) {
+          triggerLightning();
+        }
+      }, 3000);
+
+      let sunRayAngle = 0;
+      let animCelestialX = 0.5;
+      let animCelestialY = 0.25;
+      let animCelestialAlt = 45;
+      let animCelestialIsSun = true;
+      let animInitialized = false;
+
+      function drawCelestialBody(coords) {
+        if (!ctx) return;
+        // Strictly constrain coordinates to the open visible sky (x: 10% - 90%, y: 14% - 46%)
+        // This guarantees Sun and Moon are always in view and never hidden below cards or horizon
+        const cx = Math.max(width * 0.10, Math.min(width * 0.90, width * coords.xRatio));
+        const cy = Math.max(height * 0.14, Math.min(height * 0.46, height * coords.yRatio));
+
+        const sunGlowEl = document.getElementById('sun-glow');
+
+        // Celestial Obscuration logic for inclement weather (Requirement 4)
+        if (currentWeatherEffect === 'storm') {
+          if (sunGlowEl) sunGlowEl.style.display = 'none';
+          ctx.save();
+          ctx.globalAlpha = 0.04; // Heavily obscured behind storm clouds
+          ctx.fillStyle = coords.isSun ? 'rgba(255, 190, 90, 0.35)' : 'rgba(195, 220, 255, 0.35)';
+          ctx.beginPath();
+          ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          return;
+        }
+
+        if (currentWeatherEffect === 'rain') {
+          if (sunGlowEl) sunGlowEl.style.display = 'none';
+          ctx.save();
+          ctx.globalAlpha = 0.18; // Heavily dimmed diffused glow
+          ctx.fillStyle = coords.isSun ? 'rgba(255, 215, 120, 0.45)' : 'rgba(210, 230, 255, 0.45)';
+          ctx.beginPath();
+          ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+          return;
+        }
+
+        ctx.save();
+        if (currentWeatherEffect === 'cloudy') {
+          ctx.globalAlpha = 0.38;
+          if (sunGlowEl) {
+            sunGlowEl.style.display = 'block';
+            sunGlowEl.style.opacity = '0.15';
+            sunGlowEl.style.left = `calc(${cx}px - 250px)`;
+            sunGlowEl.style.top = `calc(${cy}px - 250px)`;
+          }
+        } else if (currentWeatherEffect === 'snow') {
+          ctx.globalAlpha = 0.46;
+          if (sunGlowEl) sunGlowEl.style.display = 'none';
+        } else {
+          ctx.globalAlpha = 1.0;
+          if (sunGlowEl) sunGlowEl.style.opacity = '1';
+        }
+
+        if (coords.isSun) {
+          sunRayAngle += 0.004;
+
+          // Altitude-based color toning
+          const altNorm = Math.max(0, Math.min(1, (coords.altitude || 35) / 60));
+          let sunColor = `rgba(255, ${Math.round(145 + 95 * altNorm)}, ${Math.round(60 + 110 * altNorm)}, 0.40)`;
+          let innerColor = `rgba(255, ${Math.round(190 + 65 * altNorm)}, ${Math.round(110 + 130 * altNorm)}, 0.98)`;
+
+          if (currentCelestialPhase === 'dawn' || currentCelestialPhase === 'sunset' || currentCelestialPhase === 'dusk' || coords.altitude < 12) {
+            sunColor = 'rgba(255, 80, 25, 0.65)';
+            innerColor = 'rgba(255, 125, 40, 0.98)';
+          }
+
+          // Broad radiant ambient solar corona
+          const sunGlow = ctx.createRadialGradient(cx, cy, 12, cx, cy, 160);
+          sunGlow.addColorStop(0, sunColor);
+          sunGlow.addColorStop(0.4, sunColor.replace(/[\d.]+\)$/, '0.14)'));
+          sunGlow.addColorStop(1, 'transparent');
+
+          ctx.fillStyle = sunGlow;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 160, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Rotating living corona rays (only when not heavily cloudy)
+          if (currentWeatherEffect !== 'cloudy') {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(sunRayAngle);
+            ctx.strokeStyle = sunColor;
+            ctx.lineWidth = 1.8;
+            for (let i = 0; i < 8; i++) {
+              const angle = (i * Math.PI) / 4;
+              const r1 = 36;
+              const r2 = 66 + Math.sin(sunRayAngle * 2 + i) * 10;
+              ctx.beginPath();
+              ctx.moveTo(Math.cos(angle) * r1, Math.sin(angle) * r1);
+              ctx.lineTo(Math.cos(angle) * r2, Math.sin(angle) * r2);
+              ctx.stroke();
+            }
+            ctx.restore();
+          }
+
+          // Brilliant luminous sun disc
+          ctx.save();
+          ctx.shadowColor = innerColor;
+          ctx.shadowBlur = 28;
+          ctx.fillStyle = innerColor;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 28, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+
+          // Sync DOM sun glow position
+          if (sunGlowEl && currentWeatherEffect !== 'snow') {
+            sunGlowEl.style.display = 'block';
+            sunGlowEl.style.left = `calc(${cx}px - 250px)`;
+            sunGlowEl.style.top = `calc(${cy}px - 250px)`;
+          }
+        } else {
+          // Night Moon rendering
+          if (sunGlowEl) sunGlowEl.style.display = 'none';
+
+          // Lunar silver glow
+          const moonGlow = ctx.createRadialGradient(cx, cy, 10, cx, cy, 95);
+          moonGlow.addColorStop(0, 'rgba(220, 240, 255, 0.38)');
+          moonGlow.addColorStop(0.5, 'rgba(200, 230, 255, 0.12)');
+          moonGlow.addColorStop(1, 'transparent');
+          ctx.fillStyle = moonGlow;
+          ctx.beginPath();
+          ctx.arc(cx, cy, 95, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Luminous moon disc
+          ctx.save();
+          ctx.shadowColor = '#e1f5fe';
+          ctx.shadowBlur = 20;
+          ctx.fillStyle = '#f8fafc';
+          ctx.beginPath();
+          ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Subtle lunar crater textures
+          ctx.fillStyle = 'rgba(203, 213, 225, 0.6)';
+          ctx.beginPath();
+          ctx.arc(cx - 5, cy - 4, 3.2, 0, Math.PI * 2);
+          ctx.arc(cx + 6, cy + 5, 4.0, 0, Math.PI * 2);
+          ctx.arc(cx + 7, cy - 3, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Dark lunar shadow crescent (to create natural moon crescent)
+          ctx.fillStyle = 'rgba(4, 18, 28, 0.88)';
+          ctx.beginPath();
+          ctx.arc(cx + 7, cy - 4, 20, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+        ctx.restore();
+      }
+
+      function drawOvercastClouds(ctx, weatherType = 'cloudy') {
+        if (!ctx) return;
+        const time = Date.now() * 0.00035;
+        ctx.save();
+
+        let c1 = 'rgba(215, 228, 240, 0.22)';
+        let c2 = 'rgba(195, 212, 230, 0.18)';
+        if (weatherType === 'storm') {
+          c1 = 'rgba(15, 23, 42, 0.74)';
+          c2 = 'rgba(30, 41, 59, 0.65)';
+        } else if (weatherType === 'rain') {
+          c1 = 'rgba(30, 45, 62, 0.62)';
+          c2 = 'rgba(48, 64, 84, 0.50)';
+        } else if (weatherType === 'snow') {
+          c1 = 'rgba(100, 125, 150, 0.38)';
+          c2 = 'rgba(130, 155, 180, 0.28)';
+        }
+
+        // Layer 1: High rolling clouds
+        ctx.fillStyle = c1;
+        for (let i = 0; i < 6; i++) {
+          const x = ((time * 25 + i * 280) % (width + 500)) - 250;
+          const y = 20 + Math.sin(time + i * 1.5) * 20;
+          ctx.beginPath();
+          ctx.arc(x, y, 95, 0, Math.PI * 2);
+          ctx.arc(x + 75, y - 28, 115, 0, Math.PI * 2);
+          ctx.arc(x + 155, y + 5, 90, 0, Math.PI * 2);
+          ctx.arc(x + 85, y + 25, 105, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Layer 2: Mid-altitude dense cloud bank
+        ctx.fillStyle = c2;
+        for (let i = 0; i < 5; i++) {
+          const x = ((time * 40 + i * 340 + 120) % (width + 600)) - 300;
+          const y = 65 + Math.sin(time * 1.3 + i * 2) * 25;
+          ctx.beginPath();
+          ctx.arc(x, y, 110, 0, Math.PI * 2);
+          ctx.arc(x + 85, y - 35, 130, 0, Math.PI * 2);
+          ctx.arc(x + 180, y, 100, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      function drawFogMist(ctx) {
+        if (!ctx) return;
+        const time = Date.now() * 0.0003;
+        ctx.save();
+        for (let i = 0; i < 6; i++) {
+          const x = ((time * 45 + i * 300) % (width + 600)) - 300;
+          const y = height * 0.38 + Math.sin(time + i) * 35;
+          const grad = ctx.createRadialGradient(x, y, 20, x, y, 240);
+          grad.addColorStop(0, 'rgba(235, 245, 255, 0.32)');
+          grad.addColorStop(0.5, 'rgba(215, 230, 245, 0.18)');
+          grad.addColorStop(1, 'transparent');
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(x, y, 240, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      function renderCanvasFrame() {
+        if (!ctx) return;
+        if (!liveCanvasEnabled) {
+          ctx.clearRect(0, 0, width, height);
+          requestAnimationFrame(renderCanvasFrame);
+          return;
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        const liveTimeInfo = getCurrentCityTimeInfo();
+        const city = dynamicCities[activeCityIndex];
+
+        // Determine day vs night state cleanly
+        let isNight = false;
+        if (selectedTimePhase === 'night') {
+          isNight = true;
+        } else if (selectedTimePhase === 'day') {
+          isNight = false;
+        } else {
+          isNight = liveTimeInfo.isNight;
+        }
+
+        // Compute high-resolution continuous time including real-time seconds & milliseconds
+        let effectiveDecHour = liveTimeInfo.decimalHour;
+        if (isRealTimeSync && manualDecimalHour === null) {
+          const now = new Date();
+          const s = now.getSeconds() + now.getMilliseconds() / 1000;
+          effectiveDecHour = liveTimeInfo.hours + liveTimeInfo.minutes / 60 + s / 3600;
+        }
+
+        const riseDec = parseTimeToDecimal(city.sunriseTime || "06:48");
+        const setDec = parseTimeToDecimal(city.sunsetTime || "17:34");
+
+        const dateObj = getEffectiveAstroDate();
+        if (isRealTimeSync && manualDecimalHour === null) {
+          const now = new Date();
+          dateObj.setSeconds(now.getSeconds(), now.getMilliseconds());
+        } else if (manualDecimalHour !== null) {
+          const h = Math.floor(manualDecimalHour);
+          const m = Math.floor((manualDecimalHour - h) * 60);
+          const s = Math.floor(((manualDecimalHour - h) * 60 - m) * 60);
+          dateObj.setHours(h, m, s, 0);
+        }
+
+        const astro = calculateAstronomicalOrbit(dateObj, city.lat, city.lng, city.timezone);
+        isNight = selectedTimePhase === 'night' ? true : (selectedTimePhase === 'day' ? false : !astro.isDay);
+        
+        const isSun = !isNight;
+        const arcProgress = astro.arcProgress ?? 0.5;
+        const xRatio = astro.arcXRatio;
+        const yRatio = 0.12 + astro.arcYRatio * 0.38;
+        const altitude = isSun ? astro.solarAltitude : astro.moonAltitude;
+
+        const targetCoords = {
+          xRatio,
+          yRatio,
+          altitude,
+          isSun,
+          phaseProgress: arcProgress
+        };
+
+        if (!animInitialized) {
+          animCelestialX = targetCoords.xRatio;
+          animCelestialY = targetCoords.yRatio;
+          animCelestialAlt = targetCoords.altitude;
+          animCelestialIsSun = targetCoords.isSun;
+          animInitialized = true;
+        } else {
+          // Smooth fluid motion across the sky (lerp)
+          const lerp = 0.08;
+          animCelestialX += (targetCoords.xRatio - animCelestialX) * lerp;
+          animCelestialY += (targetCoords.yRatio - animCelestialY) * lerp;
+          animCelestialAlt += (targetCoords.altitude - animCelestialAlt) * lerp;
+          animCelestialIsSun = targetCoords.isSun;
+        }
+
+        const currentCoords = {
+          xRatio: animCelestialX,
+          yRatio: animCelestialY,
+          altitude: animCelestialAlt,
+          isSun: animCelestialIsSun,
+          phaseProgress: targetCoords.phaseProgress
+        };
+
+        const stageEl = document.getElementById('stage');
+        if (stageEl) {
+          const lightX = (currentCoords.xRatio * 100).toFixed(1) + '%';
+          const lightY = (currentCoords.yRatio * 100).toFixed(1) + '%';
+          stageEl.style.setProperty('--light-x', lightX);
+          stageEl.style.setProperty('--light-y', lightY);
+
+          const sunAltDeg = astro.solarAltitude;
+          let sunGlowOpacity = 1.0;
+          if (currentCoords.isSun) {
+            if (sunAltDeg >= 10) {
+              sunGlowOpacity = 1.0;
+            } else if (sunAltDeg <= -6) {
+              sunGlowOpacity = 0.0;
+            } else {
+              sunGlowOpacity = (sunAltDeg + 6) / 16;
+            }
+          } else {
+            sunGlowOpacity = 0.25;
+          }
+          stageEl.style.setProperty('--sun-glow-opacity', sunGlowOpacity.toFixed(2));
+
+          const dynamicSkyGrad = computeSkyGradient(astro.solarAltitudeRad, astro.solarAzimuth <= 180, currentWeatherEffect);
+          stageEl.style.setProperty('--bg-sky-gradient', dynamicSkyGrad);
+          stageEl.style.background = `radial-gradient(circle at var(--light-x, 50%) var(--light-y, 30%), rgba(255, 235, 140, calc(0.28 * var(--sun-glow-opacity, 1))) 0%, transparent calc(18% + 50% * var(--sun-glow-opacity, 1))), ${dynamicSkyGrad}`;
+        }
+
+        // Atmosphere: draw background rolling clouds layer for storm, rain, or overcast
+        if (currentWeatherEffect === 'storm' || currentWeatherEffect === 'rain' || currentWeatherEffect === 'cloudy') {
+          drawOvercastClouds(ctx, currentWeatherEffect);
+        }
+
+        updateAstronomicalTracker();
+        drawCelestialBody(currentCoords);
+
+        if (currentWeatherEffect === 'snow') {
+          ctx.fillStyle = 'rgba(255, 255, 255, 0.85)';
+          snowFlakes.forEach(f => {
+            f.phase += f.swingSpeed;
+            f.y += f.speedY;
+            f.x += Math.sin(f.phase) * f.swingRadius;
+
+            if (f.y > height) {
+              f.y = -10;
+              f.x = Math.random() * width;
+            }
+
+            ctx.beginPath();
+            ctx.arc(f.x, f.y, f.radius, 0, Math.PI * 2);
+            ctx.fill();
+          });
+        } else if (currentWeatherEffect === 'fog' || currentWeatherEffect === 'mist') {
+          drawFogMist(ctx);
+        } else if (currentWeatherEffect === 'wind') {
+          windParticles.forEach(p => {
+            p.x += p.speedX;
+            p.y += p.speedY;
+
+            if (p.x > width + 100) {
+              p.x = -p.len;
+              p.y = Math.random() * height;
+            }
+
+            if (p.isLeaf) {
+              ctx.fillStyle = 'rgba(255, 179, 0, 0.65)';
+              ctx.beginPath();
+              ctx.ellipse(p.x, p.y, p.size * 2, p.size, Math.PI / 4, 0, Math.PI * 2);
+              ctx.fill();
+            } else {
+              ctx.strokeStyle = `rgba(255, 255, 255, ${p.opacity})`;
+              ctx.lineWidth = 1.2;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(p.x + p.len, p.y + p.speedY * 3);
+              ctx.stroke();
+            }
+          });
+        } else if (currentWeatherEffect === 'storm') {
+          drawOvercastClouds(ctx, 'storm');
+
+          if (lightningFlash > 0) {
+            ctx.fillStyle = `rgba(220, 240, 255, ${lightningFlash * 0.3})`;
+            ctx.fillRect(0, 0, width, height);
+
+            if (lightningBolt && lightningBolt.length > 1) {
+              ctx.save();
+              ctx.strokeStyle = `rgba(255, 255, 255, ${lightningFlash})`;
+              ctx.lineWidth = 2.6;
+              ctx.shadowColor = '#80d8ff';
+              ctx.shadowBlur = 18;
+              ctx.beginPath();
+              ctx.moveTo(lightningBolt[0].x, lightningBolt[0].y);
+              for (let i = 1; i < lightningBolt.length; i++) {
+                ctx.lineTo(lightningBolt[i].x, lightningBolt[i].y);
+              }
+              ctx.stroke();
+              ctx.restore();
+            }
+            lightningFlash -= 0.04;
+          }
+
+          ctx.strokeStyle = 'rgba(215, 238, 255, 0.42)';
+          ctx.lineWidth = 1.3;
+          ctx.beginPath();
+          rainDrops.forEach(d => {
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x - 4.5, d.y + d.length * 1.2);
+            d.y += d.speed * 1.35;
+            d.x -= 3.5;
+            if (d.y > height) {
+              d.y = -d.length;
+              d.x = Math.random() * (width + 120);
+            }
+          });
+          ctx.stroke();
+        } else if (currentWeatherEffect === 'rain') {
+          drawOvercastClouds(ctx, 'rain');
+
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.28)';
+          ctx.lineWidth = 1.1;
+          ctx.beginPath();
+          rainDrops.forEach(d => {
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d.x - 1.5, d.y + d.length * 0.85);
+            d.y += d.speed;
+            d.x -= 1.2;
+            if (d.y > height) {
+              d.y = -d.length;
+              d.x = Math.random() * width;
+            }
+          });
+          ctx.stroke();
+        } else if (currentWeatherEffect === 'cloudy') {
+          drawOvercastClouds(ctx, 'cloudy');
+        } else {
+          sunMotes.forEach(m => {
+            m.pulse += 0.025;
+            const currentA = m.alpha * (0.6 + 0.4 * Math.sin(m.pulse));
+            ctx.fillStyle = `rgba(255, 235, 170, ${currentA})`;
+            ctx.beginPath();
+            ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            m.x += m.vx;
+            m.y += m.vy;
+            if (m.y < -10) {
+              m.y = height + 10;
+              m.x = Math.random() * width;
+            }
+          });
+        }
+
+        // Stars & Meteors strictly disabled during daylight hours
+        const showStars = !animCelestialIsSun && (isNight || selectedTimePhase === 'night' || currentCelestialPhase === 'night' || currentCelestialPhase === 'dusk');
+        if (showStars) {
+          stars.forEach(s => {
+            s.phase += s.speed;
+            const starAlpha = s.baseAlpha * (0.6 + 0.4 * Math.sin(s.phase));
+            ctx.fillStyle = `rgba(255, 255, 255, ${starAlpha})`;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+            ctx.fill();
+          });
+
+          if (meteor) {
+            const endX = meteor.x - Math.cos(meteor.angle) * meteor.len;
+            const endY = meteor.y - Math.sin(meteor.angle) * meteor.len;
+            const grad = ctx.createLinearGradient(meteor.x, meteor.y, endX, endY);
+            grad.addColorStop(0, `rgba(255, 255, 255, ${meteor.opacity})`);
+            grad.addColorStop(1, 'transparent');
+
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(meteor.x, meteor.y);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+
+            meteor.x += Math.cos(meteor.angle) * meteor.speed;
+            meteor.y += Math.sin(meteor.angle) * meteor.speed;
+            meteor.opacity -= 0.02;
+            if (meteor.opacity <= 0 || meteor.x > width || meteor.y > height) {
+              meteor = null;
+            }
+          }
+        }
+
+        requestAnimationFrame(renderCanvasFrame);
+      }
+      requestAnimationFrame(renderCanvasFrame);
+
+      // Initialize App
+      renderRightRail();
+      renderForecastStrip();
+      updateHero();
+      updateAstronomicalTracker();
+      syncLiveWeatherForCity(dynamicCities[0]);
+
+      // 1-Second Real-Time Clock & Sky Atmosphere Ticker
+      setInterval(() => {
+        if (isRealTimeSync) {
+          const timeInfo = getCurrentCityTimeInfo();
+          if (liveClockText) {
+            liveClockText.textContent = `🕒 ${timeInfo.timeString} • ${dynamicCities[activeCityIndex].city}`;
+          }
+          // Real-time continuous astronomical and arc tracking
+          if (timeInfo.seconds % 2 === 0) {
+            updateAstronomicalTracker();
+          }
+          if (timeInfo.seconds === 0) {
+            updateAtmosphere(timeInfo);
+          }
+        }
+      }, 1000);
+    </script>
+  </body>
+</html>
