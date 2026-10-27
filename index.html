@@ -9,6 +9,7 @@
     <meta property="og:description" content="Toshkent va dunyo shaharlari uchun real vaqt va vaqt mintaqasi bo'yicha jonli quyosh chiqishi/botishi, yomg'ir, qor, shamol animatsiyalari va suyuq shisha dizaynidagi ob-havo platformasi." />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
     <!-- Google Fonts Inter + Inter Tight -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3370,6 +3371,8 @@
 
         saveSearchHistory(city.city);
         document.title = `Ob-havo ma'lumoti — ${city.city}`;
+        const locationTag = document.getElementById('header-location-tag');
+        if (locationTag) locationTag.textContent = city.city;
 
         updateHero();
         renderRightRail();
