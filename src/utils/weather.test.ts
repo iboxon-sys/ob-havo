@@ -97,7 +97,7 @@ test('calculateAstronomicalOrbit switches to Moon when solar altitude <= 0', () 
 
 test('getFullCityData populates humidity and windSpeed for each forecast day', () => {
   const city = getFullCityData(CITIES_DATABASE[0]);
-  assert.ok(city.days.length === 6);
+  assert.ok(city.days.length === 7);
   for (const day of city.days) {
     assert.ok(typeof day.humidity === 'number' && day.humidity >= 0 && day.humidity <= 100, 'Forecast day must have numeric humidity %');
     assert.ok(typeof day.windSpeed === 'number' && day.windSpeed >= 0, 'Forecast day must have numeric windSpeed km/h');

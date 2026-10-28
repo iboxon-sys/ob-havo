@@ -102,14 +102,7 @@ export const CITIES_DATABASE: CityWeather[] = [
     blurb: "Poytaxtda ajoyib quyoshli va sokin ob-havo hukm surmoqda. Kunduzgi harorat +22°C gacha ko'tariladi, sharqiy mayin shabada esib turibdi. Yog'ingarchilik kutilmaydi.",
     blurbNight: "Tunda musaffo oydin osmon, havo harorati +11°C gacha salqinlashadi. Shahar bo'ylab sokin va toza havo oqimi kuzatiladi.",
     bgImageUrl: "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?auto=format&fit=crop&w=1920&q=80",
-    days: [
-      { dayName: "Yakshanba", shortDate: "25-okt", dayTempC: 22, nightTempC: 11, dayCondition: "Quyoshli", nightCondition: "Ochiq tun", dayIcon: "i-sun", nightIcon: "i-moon", bgType: "sunny", weatherEffect: "sunny", headlineDay: "Iliq quyosh\nva sokin havo", headlineNight: "Oydin va sokin\ntun", blurbDay: "Ochiq quyoshli kun, sayr qilish uchun juda qulay.", blurbNight: "Musaffo yulduzli osmon, mayin shabada.", bgImageUrl: "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?auto=format&fit=crop&w=1920&q=80", humidity: 38, windSpeed: 14 },
-      { dayName: "Dushanba", shortDate: "26-okt", dayTempC: 24, nightTempC: 12, dayCondition: "Ochiq havo", nightCondition: "Salqin", dayIcon: "i-sun", nightIcon: "i-moon", bgType: "sunny", weatherEffect: "sunny", headlineDay: "Oltin kuz quyoshi\niliq harorat", headlineNight: "Sokin kecha\nmusaffo shahar", blurbDay: "Hafta boshi iliq va yorqin quyosh nurlari bilan boshlanadi.", blurbNight: "Kechasi qulay harorat, tinch ob-havo.", bgImageUrl: "https://images.unsplash.com/photo-1601297183305-6df142704ea2?auto=format&fit=crop&w=1920&q=80", humidity: 35, windSpeed: 12 },
-      { dayName: "Seshanba", shortDate: "27-okt", dayTempC: 21, nightTempC: 10, dayCondition: "Yengil bulutli", nightCondition: "Bulutli", dayIcon: "i-cloud2", nightIcon: "i-cloud", bgType: "cloudy", weatherEffect: "cloudy", headlineDay: "Yengil bulutlar\nmayin shabada", headlineNight: "Parda bulutli\ntun", blurbDay: "Vaqti-vaqti bilan yengil bulutlar o'tadi.", blurbNight: "Harorat +10°C, yengil shabada.", bgImageUrl: "https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=1920&q=80", humidity: 52, windSpeed: 16 },
-      { dayName: "Chorshanba", shortDate: "28-okt", dayTempC: 17, nightTempC: 8, dayCondition: "Bo'ron va yomg'ir", nightCondition: "Momaqaldiroq", dayIcon: "i-hail", nightIcon: "i-hail", bgType: "storm", weatherEffect: "storm", headlineDay: "Momaqaldiroq\nkuchli yomg'ir", headlineNight: "Momaqaldiroqli\nyomg'ir", blurbDay: "G'arbdan nam havo fronti kirib kelishi hisobiga jala yomg'ir va chaqmoq kutiladi.", blurbNight: "Tunda kuchli yomg'ir davom etadi, chaqnashlar kuzatiladi.", bgImageUrl: "https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?auto=format&fit=crop&w=1920&q=80", humidity: 82, windSpeed: 28 },
-      { dayName: "Payshanba", shortDate: "29-okt", dayTempC: 19, nightTempC: 9, dayCondition: "Yomg'irli", nightCondition: "Nam tun", dayIcon: "i-hail", nightIcon: "i-cloud", bgType: "rain", weatherEffect: "rain", headlineDay: "Kuzgi shabnam\nva mayin yomg'ir", headlineNight: "Nam havo\ntuman", blurbDay: "Kuzgi mayin yomg'ir havoni tozalaydi.", blurbNight: "Kechasi yengil tuman va nam shabada.", bgImageUrl: "https://images.unsplash.com/photo-1519692933481-e162a57d6721?auto=format&fit=crop&w=1920&q=80", humidity: 76, windSpeed: 18 },
-      { dayName: "Juma", shortDate: "30-okt", dayTempC: 23, nightTempC: 11, dayCondition: "Quyoshli", nightCondition: "Yulduzli", dayIcon: "i-sun", nightIcon: "i-moon", bgType: "sunny", weatherEffect: "sunny", headlineDay: "Yorqin quyosh\ntiniq ufq", headlineNight: "Sokin yulduzli\ntun", blurbDay: "Hafta oxirida yana oftob charaqlaydi.", blurbNight: "Kechasi musaffo va sokin osmon.", bgImageUrl: "https://images.unsplash.com/photo-1596484552834-6a58f850e0a1?auto=format&fit=crop&w=1920&q=80", humidity: 44, windSpeed: 15 }
-    ]
+    days: []
   },
   {
     id: "chimyon",
@@ -1640,7 +1633,8 @@ export function getLocalTimeForTimezone(
   let hours = baseDate.getUTCHours();
   let minutes = baseDate.getUTCMinutes();
   let seconds = baseDate.getUTCSeconds();
-  let dateString = "25-okt";
+  const padMonth = UZ_MONTH_NAMES[baseDate.getMonth()] || 'okt';
+  let dateString = `${baseDate.getDate()}-${padMonth}`;
 
   try {
     const formatter = new Intl.DateTimeFormat('en-US', {
@@ -2002,11 +1996,73 @@ export interface LiveApiWeatherResponse {
   dailyMax: number[];
   dailyMin: number[];
   dailyCodes: number[];
+  dailyTimes?: string[];
+  dailySunrise?: string[];
+  dailySunset?: string[];
   dailyHumidity?: number[];
   dailyWindSpeed?: number[];
   isOnline: boolean;
   lastUpdated: string;
 }
+
+export function parseWmoWeatherCode(code: number): {
+  dayCond: string;
+  nightCond: string;
+  dayIcon: string;
+  nightIcon: string;
+  bgType: 'storm' | 'sunny' | 'cloudy' | 'rain' | 'night';
+  effect: 'sunny' | 'rain' | 'storm' | 'snow' | 'wind' | 'cloudy';
+} {
+  if (code >= 95) {
+    return {
+      dayCond: "Momaqaldiroqli bo'ron va jala",
+      nightCond: "Momaqaldiroqli tun",
+      dayIcon: "i-hail",
+      nightIcon: "i-hail",
+      bgType: "storm",
+      effect: "storm"
+    };
+  } else if (code >= 71 && code <= 86) {
+    return {
+      dayCond: "Mayin qor yog'ishi",
+      nightCond: "Qorli sovuq tun",
+      dayIcon: "i-cloud",
+      nightIcon: "i-moon",
+      bgType: "cloudy",
+      effect: "snow"
+    };
+  } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+    return {
+      dayCond: "Yomg'irli ob-havo",
+      nightCond: "Kuzgi mayin yomg'ir",
+      dayIcon: "i-hail",
+      nightIcon: "i-cloud",
+      bgType: "rain",
+      effect: "rain"
+    };
+  } else if (code === 1 || code === 2 || code === 3 || code === 45 || code === 48) {
+    return {
+      dayCond: "Bulutli va mayin shabada",
+      nightCond: "Parda bulutli tun",
+      dayIcon: "i-cloud2",
+      nightIcon: "i-cloud",
+      bgType: "cloudy",
+      effect: "cloudy"
+    };
+  } else {
+    return {
+      dayCond: "Quyoshli va musaffo",
+      nightCond: "Oydin va musaffo tun",
+      dayIcon: "i-sun",
+      nightIcon: "i-moon",
+      bgType: "sunny",
+      effect: "sunny"
+    };
+  }
+}
+
+export const UZ_DAY_NAMES = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"];
+export const UZ_MONTH_NAMES = ["yan", "fev", "mar", "apr", "may", "iyn", "iyl", "avg", "sen", "okt", "noy", "dek"];
 
 export async function fetchLiveMeteoWeather(lat: number, lng: number): Promise<LiveApiWeatherResponse | null> {
   try {
@@ -2019,22 +2075,11 @@ export async function fetchLiveMeteoWeather(lat: number, lng: number): Promise<L
     if (!current) return null;
 
     const code = current.weather_code ?? 0;
-    let effect: 'sunny' | 'rain' | 'storm' | 'snow' | 'wind' | 'cloudy' = 'sunny';
-    let conditionName = "Quyoshli va musaffo";
+    const parsed = parseWmoWeatherCode(code);
+    let effect = parsed.effect;
+    let conditionName = parsed.dayCond;
 
-    if (code >= 95) {
-      effect = 'storm';
-      conditionName = "Momaqaldiroqli bo'ron va jala";
-    } else if (code >= 71 && code <= 86) {
-      effect = 'snow';
-      conditionName = "Mayin qor yog'ishi";
-    } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
-      effect = 'rain';
-      conditionName = "Yomg'irli ob-havo";
-    } else if (code === 1 || code === 2 || code === 3 || code === 45 || code === 48) {
-      effect = 'cloudy';
-      conditionName = "Bulutli va mayin shabada";
-    } else if (current.wind_speed_10m > 28) {
+    if (current.wind_speed_10m > 28 && effect !== 'storm') {
       effect = 'wind';
       conditionName = "Kuchli shamol esishi";
     }
@@ -2044,6 +2089,9 @@ export async function fetchLiveMeteoWeather(lat: number, lng: number): Promise<L
     const dailyCodes = daily?.weather_code || [];
     const dailyHumidity = (daily?.relative_humidity_2m_mean || []).map((h: number) => Math.round(h));
     const dailyWindSpeed = (daily?.wind_speed_10m_max || []).map((w: number) => Math.round(w));
+    const dailyTimes = daily?.time || [];
+    const dailySunrise = daily?.sunrise || [];
+    const dailySunset = daily?.sunset || [];
 
     const now = new Date();
     const pad = (n: number) => n.toString().padStart(2, '0');
@@ -2061,6 +2109,9 @@ export async function fetchLiveMeteoWeather(lat: number, lng: number): Promise<L
       dailyMax,
       dailyMin,
       dailyCodes,
+      dailyTimes,
+      dailySunrise,
+      dailySunset,
       dailyHumidity,
       dailyWindSpeed,
       isOnline: true,
@@ -2072,39 +2123,35 @@ export async function fetchLiveMeteoWeather(lat: number, lng: number): Promise<L
 }
 
 /**
- * 6 kunlik to'liq prognoz ma'lumotlarini to'ldirish
+ * 7 kunlik dinamik prognoz ma'lumotlarini hisoblash (Bugundan boshlab)
  */
-export function getFullCityData(rawCity: CityWeather): CityWeather {
-  if (rawCity.days && rawCity.days.length === 6) {
-    const enrichedDays = rawCity.days.map((day, i) => ({
-      ...day,
-      humidity: typeof day.humidity === 'number' ? day.humidity : Math.max(20, Math.min(95, (rawCity.humidityPercent || 45) + (i % 2 === 0 ? 4 : -3))),
-      windSpeed: typeof day.windSpeed === 'number' ? day.windSpeed : Math.max(5, Math.min(50, (rawCity.windKmh || 14) + (i % 3 === 0 ? 3 : -2)))
-    }));
-    return { ...rawCity, days: enrichedDays };
-  }
-
-  const dayNames = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma"];
-  const dates = ["25-okt", "26-okt", "27-okt", "28-okt", "29-okt", "30-okt"];
-
+export function generateDynamicForecastDays(rawCity: CityWeather, refDate = new Date()): ForecastDay[] {
   const conditionPresets = [
-    { dayIcon: 'i-sun', nightIcon: 'i-moon', dayCond: "Quyoshli", nightCond: "Ochiq tun", bgType: 'sunny' as const, effect: 'sunny' as const, bgImg: rawCity.bgImageUrl || BACKGROUND_IMAGES.sunny },
+    { dayIcon: 'i-sun', nightIcon: 'i-moon', dayCond: "Quyoshli va musaffo", nightCond: "Ochiq tun", bgType: 'sunny' as const, effect: 'sunny' as const, bgImg: rawCity.bgImageUrl || BACKGROUND_IMAGES.sunny },
     { dayIcon: 'i-sun', nightIcon: 'i-moon', dayCond: "Ochiq havo", nightCond: "Salqin tun", bgType: 'sunny' as const, effect: 'sunny' as const, bgImg: BACKGROUND_IMAGES.sunny },
     { dayIcon: 'i-cloud2', nightIcon: 'i-cloud', dayCond: "Yengil bulutli", nightCond: "Bulutli tun", bgType: 'cloudy' as const, effect: 'cloudy' as const, bgImg: BACKGROUND_IMAGES.cloudy },
     { dayIcon: 'i-hail', nightIcon: 'i-hail', dayCond: "Bo'ron va jala", nightCond: "Momaqaldiroq", bgType: 'storm' as const, effect: 'storm' as const, bgImg: BACKGROUND_IMAGES.storm },
     { dayIcon: 'i-hail', nightIcon: 'i-cloud', dayCond: "Yomg'irli", nightCond: "Nam tuman", bgType: 'rain' as const, effect: 'rain' as const, bgImg: BACKGROUND_IMAGES.rain },
-    { dayIcon: 'i-sun', nightIcon: 'i-moon', dayCond: "Quyoshli", nightCond: "Yulduzli tun", bgType: 'sunny' as const, effect: 'sunny' as const, bgImg: rawCity.bgImageUrl || BACKGROUND_IMAGES.sunny },
+    { dayIcon: 'i-cloud2', nightIcon: 'i-moon', dayCond: "O'zgaruvchan bulutli", nightCond: "Salqin tun", bgType: 'cloudy' as const, effect: 'cloudy' as const, bgImg: BACKGROUND_IMAGES.cloudy },
+    { dayIcon: 'i-sun', nightIcon: 'i-moon', dayCond: "Quyoshli va iliq", nightCond: "Yulduzli tun", bgType: 'sunny' as const, effect: 'sunny' as const, bgImg: rawCity.bgImageUrl || BACKGROUND_IMAGES.sunny },
   ];
 
-  const days: ForecastDay[] = dayNames.map((name, i) => {
-    const offset = i === 3 ? -5 : i === 4 ? -3 : (i % 2 === 0 ? 1 : -1);
+  const days: ForecastDay[] = [];
+  for (let i = 0; i < 7; i++) {
+    const curDate = new Date(refDate);
+    curDate.setDate(refDate.getDate() + i);
+    const dayOfWeek = curDate.getDay();
+    const dayName = i === 0 ? "Bugun" : UZ_DAY_NAMES[dayOfWeek];
+    const shortDate = `${curDate.getDate()}-${UZ_MONTH_NAMES[curDate.getMonth()]}`;
+
+    const offset = i === 0 ? 0 : i === 3 ? -5 : i === 4 ? -3 : (i % 2 === 0 ? 1 : -1);
     const dayTemp = rawCity.tempC + offset;
     const nightTemp = rawCity.nightTempC + Math.round(offset / 2);
-    const preset = conditionPresets[i];
+    const preset = conditionPresets[i % conditionPresets.length];
 
-    return {
-      dayName: name,
-      shortDate: dates[i],
+    days.push({
+      dayName,
+      shortDate,
       dayTempC: dayTemp,
       nightTempC: nightTemp,
       dayCondition: preset.dayCond,
@@ -2116,13 +2163,29 @@ export function getFullCityData(rawCity: CityWeather): CityWeather {
       bgImageUrl: preset.bgImg,
       headlineDay: `${preset.dayCond}\n${rawCity.city}`,
       headlineNight: `Sokin tun\n${rawCity.city}`,
-      blurbDay: `${rawCity.city} shahrida kunduzgi harorat ${dayTemp > 0 ? '+' : ''}${dayTemp}°C, ${preset.dayCond.toLowerCase()}.`,
+      blurbDay: `${rawCity.city} shahrida ${UZ_DAY_NAMES[dayOfWeek]} kuni kunduzgi harorat ${dayTemp > 0 ? '+' : ''}${dayTemp}°C, ${preset.dayCond.toLowerCase()}.`,
       blurbNight: `Tungi harorat ${nightTemp > 0 ? '+' : ''}${nightTemp}°C, ${preset.nightCond.toLowerCase()}.`,
       humidity: Math.max(20, Math.min(95, (rawCity.humidityPercent || 45) + (i % 2 === 0 ? 4 : -3) + (preset.effect === 'rain' ? 32 : preset.effect === 'storm' ? 38 : 0))),
       windSpeed: Math.max(5, Math.min(50, (rawCity.windKmh || 14) + (i % 3 === 0 ? 3 : -2) + (preset.effect === 'storm' ? 18 : 0)))
-    };
-  });
+    });
+  }
+  return days;
+}
 
+/**
+ * 7 kunlik to'liq prognoz ma'lumotlarini to'ldirish
+ */
+export function getFullCityData(rawCity: CityWeather): CityWeather {
+  if (rawCity.days && rawCity.days.length === 7) {
+    const enrichedDays = rawCity.days.map((day, i) => ({
+      ...day,
+      humidity: typeof day.humidity === 'number' ? day.humidity : Math.max(20, Math.min(95, (rawCity.humidityPercent || 45) + (i % 2 === 0 ? 4 : -3))),
+      windSpeed: typeof day.windSpeed === 'number' ? day.windSpeed : Math.max(5, Math.min(50, (rawCity.windKmh || 14) + (i % 3 === 0 ? 3 : -2)))
+    }));
+    return { ...rawCity, days: enrichedDays };
+  }
+
+  const days = generateDynamicForecastDays(rawCity);
   return { ...rawCity, days };
 }
 
@@ -2212,8 +2275,8 @@ export function tempToChartY(tempC: number): number {
  * SVG Wave chart generator
  */
 export function buildWavePathForTemps(temps: number[], width = 835, height = 230): { strokePath: string; fillPath: string } {
-  if (temps.length < 6) {
-    const strokePath = "M0,79 C 70,75 125,62 180,56 C 235,50 285,46 340,44 C 405,42 450,88 510,102 C 570,116 610,38 670,22 C 730,6 780,52 835,86";
+  if (!temps || temps.length < 2) {
+    const strokePath = `M0,115 L${width},115`;
     return { strokePath, fillPath: `${strokePath} L${width},${height} L0,${height} Z` };
   }
 
@@ -2226,15 +2289,24 @@ export function buildWavePathForTemps(temps: number[], width = 835, height = 230
     return Math.round(150 - ratio * 105);
   };
 
-  const y0 = getY(temps[0]);
-  const y1 = getY(temps[1]);
-  const y2 = getY(temps[2]);
-  const y3 = getY(temps[3]);
-  const y4 = getY(temps[4]);
-  const y5 = getY(temps[5]);
+  const points = temps.map((t, i) => {
+    const x = Math.round((i / (temps.length - 1)) * width);
+    const y = getY(t);
+    return { x, y };
+  });
 
-  const strokePath = `M0,${y0} C 70,${y0 - 5} 125,${y1 + 5} 180,${y1} C 235,${y1 - 5} 285,${y2 + 4} 340,${y2} C 405,${y2 - 6} 450,${y3 + 12} 510,${y3} C 570,${y3 - 12} 610,${y4 - 8} 670,${y4} C 730,${y4 + 8} 780,${y5 - 10} ${width},${y5}`;
+  let strokePath = `M${points[0].x},${points[0].y}`;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i];
+    const p1 = points[i + 1];
+    const dx = p1.x - p0.x;
+    const cpX1 = Math.round(p0.x + dx * 0.45);
+    const cpY1 = p0.y;
+    const cpX2 = Math.round(p1.x - dx * 0.45);
+    const cpY2 = p1.y;
+    strokePath += ` C ${cpX1},${cpY1} ${cpX2},${cpY2} ${p1.x},${p1.y}`;
+  }
+
   const fillPath = `${strokePath} L${width},${height} L0,${height} Z`;
-
   return { strokePath, fillPath };
 }

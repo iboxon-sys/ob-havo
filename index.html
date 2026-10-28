@@ -1698,6 +1698,231 @@
         to { opacity: 1; clip-path: inset(0 0 0 0); }
       }
 
+      /* =======================================================
+         10-SECOND INTRO LOADING SCREEN (ZUHRIDDIN SYS PRODUCT TAQDIM ETADI)
+         ======================================================= */
+      .intro-loading-screen {
+        position: fixed;
+        inset: 0;
+        z-index: 999999;
+        background: radial-gradient(circle at 50% 40%, rgba(14, 38, 62, 0.98) 0%, #030d16 65%, #01060b 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s ease;
+      }
+
+      .intro-loading-screen.fade-out {
+        opacity: 0;
+        transform: scale(1.08);
+        filter: blur(14px);
+        pointer-events: none;
+      }
+
+      .intro-content-card {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        max-width: min(92vw, 680px);
+        padding: clamp(24px, 5vw, 44px) clamp(20px, 6vw, 54px);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(34px) saturate(140%);
+        -webkit-backdrop-filter: blur(34px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 32px;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 50px rgba(0, 230, 118, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        animation: introCardEntrance 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+      }
+
+      @keyframes introCardEntrance {
+        0% { opacity: 0; transform: translateY(35px) scale(0.92); }
+        100% { opacity: 1; transform: translateY(0) scale(1); }
+      }
+
+      .intro-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(4, 18, 27, 0.75);
+        border: 1px solid rgba(0, 230, 118, 0.5);
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: #a5d6a7;
+        margin-bottom: 22px;
+        box-shadow: 0 0 20px rgba(0, 230, 118, 0.25);
+      }
+
+      .intro-live-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #00e676;
+        box-shadow: 0 0 10px #00e676;
+        animation: introPulseDot 1.4s infinite ease-in-out;
+      }
+
+      @keyframes introPulseDot {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.3); opacity: 0.5; }
+      }
+
+      .intro-emblem-wrap {
+        position: relative;
+        width: 86px;
+        height: 86px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .intro-emblem-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px dashed rgba(255, 215, 64, 0.55);
+        animation: introRotateRing 12s linear infinite;
+      }
+
+      .intro-emblem-ring-2 {
+        position: absolute;
+        inset: -8px;
+        border-radius: 50%;
+        border: 1px solid rgba(0, 230, 118, 0.4);
+        animation: introRotateRingRev 8s linear infinite;
+      }
+
+      @keyframes introRotateRing {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes introRotateRingRev {
+        from { transform: rotate(360deg); }
+        to { transform: rotate(0deg); }
+      }
+
+      .intro-emblem-center {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #ffe082 0%, #ff9800 60%, #e65100 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 35px rgba(255, 179, 0, 0.7);
+        font-size: 30px;
+        animation: introPulseCenter 2.2s ease-in-out infinite alternate;
+      }
+
+      @keyframes introPulseCenter {
+        0% { transform: scale(0.94); box-shadow: 0 0 25px rgba(255, 179, 0, 0.5); }
+        100% { transform: scale(1.06); box-shadow: 0 0 45px rgba(255, 215, 64, 0.85); }
+      }
+
+      .intro-brand-title {
+        font-family: 'Inter Tight', 'Inter', sans-serif;
+        font-size: clamp(24px, 5.5vw, 42px);
+        font-weight: 900;
+        letter-spacing: clamp(1px, 0.5vw, 2.5px);
+        line-height: 1.15;
+        margin: 0 0 8px 0;
+        background: linear-gradient(135deg, #ffffff 0%, #fff9c4 40%, #ffd54f 75%, #ffb300 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 4px 30px rgba(255, 213, 79, 0.35);
+        animation: introShimmerText 3s linear infinite;
+      }
+
+      @keyframes introShimmerText {
+        0%, 100% { filter: brightness(1); }
+        50% { filter: brightness(1.25) drop-shadow(0 0 12px rgba(255, 235, 59, 0.5)); }
+      }
+
+      .intro-brand-subtitle {
+        font-size: clamp(14px, 3vw, 19px);
+        font-weight: 700;
+        letter-spacing: clamp(4px, 1.2vw, 8px);
+        color: #81d4fa;
+        text-transform: uppercase;
+        margin: 0 0 26px 0;
+        text-shadow: 0 0 16px rgba(129, 212, 250, 0.6);
+      }
+
+      .intro-progress-container {
+        width: 100%;
+        max-width: 440px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .intro-progress-track {
+        width: 100%;
+        height: 10px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        position: relative;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
+      }
+
+      .intro-progress-fill {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #00e676 0%, #00b0ff 50%, #ffd54f 100%);
+        border-radius: 6px;
+        box-shadow: 0 0 14px rgba(0, 230, 118, 0.7);
+        transition: width 0.12s linear;
+      }
+
+      .intro-progress-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 600;
+      }
+
+      .intro-status-msg {
+        font-size: 13.5px;
+        color: #ffd54f;
+        font-weight: 600;
+        min-height: 22px;
+        transition: opacity 0.2s ease;
+      }
+
+      .intro-skip-btn {
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: rgba(255, 255, 255, 0.85);
+        padding: 8px 22px;
+        border-radius: 16px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        backdrop-filter: blur(12px);
+        margin-top: 8px;
+      }
+      .intro-skip-btn:hover {
+        background: rgba(255, 255, 255, 0.25);
+        border-color: #ffffff;
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
       /* Mobile reflow <= 860px */
       @media (max-width: 860px) {
         :root {
@@ -2038,7 +2263,40 @@
       <symbol id="i-volume-off" viewBox="0 0 24 24">
         <path d="M11 5L6 9H2v6h4l5 4V5zM23 9l-6 6M17 9l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none" />
       </symbol>
-    </svg>
+    <!-- 10-Soniyalik Animatsion Kirish Sahifasi: ZUHRIDDIN SYS PRODUCT TAQDIM ETADI -->
+    <div id="intro-loading-screen" class="intro-loading-screen" role="dialog" aria-modal="true" aria-label="Yuklanish sahifasi">
+      <div class="intro-content-card">
+        <div class="intro-badge">
+          <span class="intro-live-dot"></span>
+          <span>PLATFORMA BETA VERSIYADA ISHLAMOQDA</span>
+        </div>
+
+        <div class="intro-emblem-wrap">
+          <div class="intro-emblem-ring"></div>
+          <div class="intro-emblem-ring-2"></div>
+          <div class="intro-emblem-center">⛅</div>
+        </div>
+
+        <h1 class="intro-brand-title">ZUHRIDDIN SYS PRODUCT</h1>
+        <p class="intro-brand-subtitle">TAQDIM ETADI</p>
+
+        <div class="intro-progress-container">
+          <div class="intro-progress-track">
+            <div id="intro-progress-bar" class="intro-progress-fill"></div>
+          </div>
+          <div class="intro-progress-info">
+            <span id="intro-countdown-text">Boshlanishiga: 10 soniya</span>
+            <span id="intro-percent-text">0%</span>
+          </div>
+        </div>
+
+        <div id="intro-status-msg" class="intro-status-msg">Jonli atmosfera va sun'iy yo'ldosh ma'lumotlari tayyorlanmoqda...</div>
+
+        <button type="button" id="intro-skip-btn" class="intro-skip-btn" title="Kutmasdan to'g'ridan-to'g'ri tizimga o'tish">
+          Tezkor o'tish &rarr;
+        </button>
+      </div>
+    </div>
 
     <div class="stage" id="stage">
       <!-- Dynamic Sun Glow Overlay -->
@@ -2562,6 +2820,9 @@
         calculateAstronomicalOrbit,
         computeMoonSvgPaths,
         fetchLiveMeteoWeather,
+        parseWmoWeatherCode,
+        UZ_DAY_NAMES,
+        UZ_MONTH_NAMES,
         BACKGROUND_IMAGES
       } from './src/utils/weather.ts';
 
@@ -2717,7 +2978,7 @@
             seconds: s,
             decimalHour: manualDecimalHour,
             timeString,
-            dateString: "25-okt",
+            dateString: `${new Date().getDate()}-${UZ_MONTH_NAMES[new Date().getMonth()] || 'okt'}`,
             isNight,
             phase,
             phaseName
@@ -3022,8 +3283,8 @@
           const dayBtn = document.createElement('button');
           dayBtn.type = 'button';
           dayBtn.className = `day-label ${idx === activeDayIndex ? 'on' : ''}`;
-          dayBtn.textContent = dayData.dayName;
-          dayBtn.setAttribute('title', `${dayData.dayName} kunini tanlash`);
+          dayBtn.innerHTML = `<span style="display:block; font-weight:700;">${dayData.dayName}</span>${dayData.shortDate ? `<span style="display:block; font-size:calc(11*var(--u)); opacity:0.82; font-weight:500; margin-top:calc(1*var(--u));">${dayData.shortDate}</span>` : ''}`;
+          dayBtn.setAttribute('title', `${dayData.dayName} (${dayData.shortDate || ''}) kunini tanlash`);
           dayBtn.addEventListener('click', () => selectDay(idx));
           daysContainer.appendChild(dayBtn);
         });
@@ -3360,20 +3621,59 @@
           city.condition = liveData.conditionName;
 
           if (liveData.dailyMax && liveData.dailyMax.length > 0) {
-            liveData.dailyMax.forEach((max, idx) => {
-              if (city.days[idx]) {
-                city.days[idx].dayTempC = max;
-                if (liveData.dailyMin && liveData.dailyMin[idx] !== undefined) {
-                  city.days[idx].nightTempC = liveData.dailyMin[idx];
+            const count = Math.min(7, liveData.dailyMax.length);
+            const dynamicDays = [];
+            const today = new Date();
+
+            for (let i = 0; i < count; i++) {
+              let curDate = new Date(today);
+              if (liveData.dailyTimes && liveData.dailyTimes[i]) {
+                const parsedDate = new Date(liveData.dailyTimes[i] + 'T12:00:00');
+                if (!isNaN(parsedDate.getTime())) {
+                  curDate = parsedDate;
                 }
-                if (liveData.dailyHumidity && liveData.dailyHumidity[idx] !== undefined) {
-                  city.days[idx].humidity = liveData.dailyHumidity[idx];
-                }
-                if (liveData.dailyWindSpeed && liveData.dailyWindSpeed[idx] !== undefined) {
-                  city.days[idx].windSpeed = liveData.dailyWindSpeed[idx];
-                }
+              } else {
+                curDate.setDate(today.getDate() + i);
               }
-            });
+
+              const dayOfWeek = curDate.getDay();
+              const dayName = i === 0 ? "Bugun" : UZ_DAY_NAMES[dayOfWeek];
+              const shortDate = `${curDate.getDate()}-${UZ_MONTH_NAMES[curDate.getMonth()] || 'okt'}`;
+
+              const code = liveData.dailyCodes && liveData.dailyCodes[i] !== undefined 
+                ? liveData.dailyCodes[i] 
+                : (i === 0 ? liveData.weatherCode : 0);
+              const parsedWeather = parseWmoWeatherCode(code);
+
+              const maxT = liveData.dailyMax[i];
+              const minT = liveData.dailyMin && liveData.dailyMin[i] !== undefined ? liveData.dailyMin[i] : Math.max(1, maxT - 9);
+              const hum = liveData.dailyHumidity && liveData.dailyHumidity[i] !== undefined ? liveData.dailyHumidity[i] : (city.humidityPercent || 40);
+              const wind = liveData.dailyWindSpeed && liveData.dailyWindSpeed[i] !== undefined ? liveData.dailyWindSpeed[i] : (city.windKmh || 14);
+
+              dynamicDays.push({
+                dayName,
+                shortDate,
+                dayTempC: maxT,
+                nightTempC: minT,
+                dayCondition: parsedWeather.dayCond,
+                nightCondition: parsedWeather.nightCond,
+                dayIcon: parsedWeather.dayIcon,
+                nightIcon: parsedWeather.nightIcon,
+                bgType: parsedWeather.bgType,
+                weatherEffect: parsedWeather.effect,
+                bgImageUrl: city.bgImageUrl || BACKGROUND_IMAGES.sunny,
+                headlineDay: `${parsedWeather.dayCond}\n${city.city}`,
+                headlineNight: `Sokin tun\n${city.city}`,
+                blurbDay: `${city.city} shahrida ${UZ_DAY_NAMES[dayOfWeek]} kuni kunduzgi harorat ${maxT > 0 ? '+' : ''}${maxT}°C, ${parsedWeather.dayCond.toLowerCase()}.`,
+                blurbNight: `Tungi harorat ${minT > 0 ? '+' : ''}${minT}°C, ${parsedWeather.nightCond.toLowerCase()}.`,
+                humidity: hum,
+                windSpeed: wind
+              });
+            }
+
+            if (dynamicDays.length === 7) {
+              city.days = dynamicDays;
+            }
           }
 
           if (apiChipText) {
@@ -4542,6 +4842,83 @@
           }
         }
       }, 1000);
+
+      // =======================================================
+      // 10-Soniyalik Animatsion Kirish Sahifasi Boshqaruvi
+      // "ZUHRIDDIN SYS PRODUCT TAQDIM ETADI"
+      // =======================================================
+      const introScreen = document.getElementById('intro-loading-screen');
+      const introProgressBar = document.getElementById('intro-progress-bar');
+      const introCountdownText = document.getElementById('intro-countdown-text');
+      const introPercentText = document.getElementById('intro-percent-text');
+      const introStatusMsg = document.getElementById('intro-status-msg');
+      const introSkipBtn = document.getElementById('intro-skip-btn');
+
+      if (introScreen) {
+        const TOTAL_DURATION_MS = 10000;
+        const INTERVAL_MS = 80;
+        const startTime = Date.now();
+        let introDismissed = false;
+
+        const statusPhases = [
+          { until: 0.20, msg: "Jonli atmosfera va sun'iy yo'ldosh ma'lumotlari ulanmoqda..." },
+          { until: 0.45, msg: "7 kunlik ob-havo prognozlari va harorat egri chizig'i shakllantirilmoqda..." },
+          { until: 0.70, msg: "Quyosh va Oy 1:1 astronomik orbitasi kalibrlanmoqda..." },
+          { until: 0.90, msg: "O'zbekiston hududlari meteo-ma'lumotlari sinxronlanmoqda..." },
+          { until: 1.00, msg: "Tizim to'liq tayyor! Xush kelibsiz!" }
+        ];
+
+        function dismissIntro() {
+          if (introDismissed) return;
+          introDismissed = true;
+          if (introScreen) {
+            introScreen.classList.add('fade-out');
+            setTimeout(() => {
+              introScreen.style.display = 'none';
+              introScreen.remove();
+            }, 700);
+          }
+        }
+
+        const introTimer = setInterval(() => {
+          if (introDismissed) {
+            clearInterval(introTimer);
+            return;
+          }
+
+          const elapsed = Date.now() - startTime;
+          const progress = Math.min(1, elapsed / TOTAL_DURATION_MS);
+          const percent = Math.floor(progress * 100);
+          const remainingSecs = Math.max(0, Math.ceil((TOTAL_DURATION_MS - elapsed) / 1000));
+
+          if (introProgressBar) {
+            introProgressBar.style.width = `${percent}%`;
+          }
+          if (introPercentText) {
+            introPercentText.textContent = `${percent}%`;
+          }
+          if (introCountdownText) {
+            introCountdownText.textContent = `Boshlanishiga: ${remainingSecs} soniya`;
+          }
+
+          const curPhase = statusPhases.find(p => progress <= p.until) || statusPhases[statusPhases.length - 1];
+          if (introStatusMsg && introStatusMsg.textContent !== curPhase.msg) {
+            introStatusMsg.textContent = curPhase.msg;
+          }
+
+          if (progress >= 1) {
+            clearInterval(introTimer);
+            setTimeout(dismissIntro, 350);
+          }
+        }, INTERVAL_MS);
+
+        if (introSkipBtn) {
+          introSkipBtn.addEventListener('click', () => {
+            clearInterval(introTimer);
+            dismissIntro();
+          });
+        }
+      }
     </script>
   </body>
 </html>
