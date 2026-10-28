@@ -831,6 +831,33 @@
         transform: translateY(calc(-2 * var(--u)));
       }
 
+      /* Day Header inside card (for seamless mobile swipe recognition) */
+      .temp-col-day-header {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        margin-bottom: calc(5 * var(--u));
+        padding-bottom: calc(4 * var(--u));
+        border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+      }
+      .temp-col-day-title {
+        font-size: calc(13 * var(--u));
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: 0.3px;
+        line-height: 1.15;
+      }
+      .temp-col-day-date {
+        font-size: calc(10.5 * var(--u));
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 500;
+        margin-top: calc(1 * var(--u));
+      }
+      .temp-col.active .temp-col-day-title {
+        color: #ffd54f;
+      }
+
       /* Row 1: Kunduzgi (Daytime) Ob-havo Tier Button */
       .temp-day-tier {
         display: flex;
@@ -2109,32 +2136,48 @@
           width: 100% !important;
           z-index: 10 !important;
         }
+        .temp-col-day-header {
+          display: flex !important;
+        }
         .temps-row {
           overflow-x: auto !important;
           gap: calc(8 * var(--u)) !important;
           padding-bottom: calc(6 * var(--u)) !important;
           scrollbar-width: none !important;
           -webkit-overflow-scrolling: touch !important;
+          scroll-snap-type: x proximity !important;
+          scroll-behavior: smooth !important;
+          padding-left: calc(6 * var(--u)) !important;
+          padding-right: calc(6 * var(--u)) !important;
         }
         .temps-row::-webkit-scrollbar {
           display: none !important;
         }
         .temp-col {
-          min-width: calc(76 * var(--u)) !important;
+          min-width: calc(86 * var(--u)) !important;
+          width: calc(86 * var(--u)) !important;
           flex-shrink: 0 !important;
+          scroll-snap-align: center !important;
         }
         .days-row {
           overflow-x: auto !important;
           gap: calc(8 * var(--u)) !important;
           padding-bottom: calc(4 * var(--u)) !important;
           scrollbar-width: none !important;
+          -webkit-overflow-scrolling: touch !important;
+          scroll-snap-type: x proximity !important;
+          scroll-behavior: smooth !important;
+          padding-left: calc(6 * var(--u)) !important;
+          padding-right: calc(6 * var(--u)) !important;
         }
         .days-row::-webkit-scrollbar {
           display: none !important;
         }
         .day-label {
-          min-width: calc(70 * var(--u)) !important;
+          min-width: calc(86 * var(--u)) !important;
+          width: calc(86 * var(--u)) !important;
           flex-shrink: 0 !important;
+          scroll-snap-align: center !important;
         }
         .big-temp {
           font-size: clamp(42px, 11vw, 58px) !important;
@@ -3203,7 +3246,7 @@
         activeDayIndex = idx;
         selectedTimePhase = tierPhase;
         updateHero();
-        renderForecastStrip();
+        updateActiveDayUI(true);
         updateAstronomicalTracker();
         scheduleResetToLive();
       }
@@ -3212,9 +3255,99 @@
         activeDayIndex = idx;
         selectedTimePhase = 'day';
         updateHero();
-        renderForecastStrip();
+        updateActiveDayUI(true);
         updateAstronomicalTracker();
         scheduleResetToLive();
+      }
+
+      function updateActiveDayUI(shouldScroll = true) {
+        const cols = tempsContainer?.querySelectorAll('.temp-col');
+        const dayBtns = daysContainer?.querySelectorAll('.day-label');
+        if (cols) {
+          cols.forEach((c, i) => {
+            const isDayActive = i === activeDayIndex && (selectedTimePhase === 'day' || selectedTimePhase === null);
+            const isNightActive = i === activeDayIndex && selectedTimePhase === 'night';
+            c.classList.toggle('active', i === activeDayIndex);
+            const dayTier = c.querySelector('.temp-day-tier');
+            if (dayTier) dayTier.classList.toggle('active-tier', isDayActive);
+            const nightTier = c.querySelector('.temp-night-tier');
+            if (nightTier) nightTier.classList.toggle('active-tier', isNightActive);
+          });
+        }
+        if (dayBtns) {
+          dayBtns.forEach((b, i) => {
+            b.classList.toggle('on', i === activeDayIndex);
+          });
+        }
+        if (shouldScroll) {
+          scrollToActiveDay();
+        }
+      }
+
+      function scrollToActiveDay() {
+        const cols = tempsContainer?.querySelectorAll('.temp-col');
+        const dayBtns = daysContainer?.querySelectorAll('.day-label');
+        if (cols && cols[activeDayIndex]) {
+          cols[activeDayIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+        if (dayBtns && dayBtns[activeDayIndex]) {
+          dayBtns[activeDayIndex].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }
+
+      let isSyncingTemps = false;
+      let isSyncingDays = false;
+      let scrollSelectionTimeout = null;
+
+      function setupForecastScrollSync() {
+        if (!tempsContainer || !daysContainer) return;
+        if (tempsContainer.dataset.syncBound === 'true') return;
+        tempsContainer.dataset.syncBound = 'true';
+
+        tempsContainer.addEventListener('scroll', () => {
+          if (isSyncingTemps) return;
+          isSyncingDays = true;
+          daysContainer.scrollLeft = tempsContainer.scrollLeft;
+          requestAnimationFrame(() => { isSyncingDays = false; });
+          handleForecastScrollAutoSelect();
+        }, { passive: true });
+
+        daysContainer.addEventListener('scroll', () => {
+          if (isSyncingDays) return;
+          isSyncingTemps = true;
+          tempsContainer.scrollLeft = daysContainer.scrollLeft;
+          requestAnimationFrame(() => { isSyncingTemps = false; });
+          handleForecastScrollAutoSelect();
+        }, { passive: true });
+      }
+
+      function handleForecastScrollAutoSelect() {
+        if (scrollSelectionTimeout) clearTimeout(scrollSelectionTimeout);
+        scrollSelectionTimeout = setTimeout(() => {
+          const cols = tempsContainer?.querySelectorAll('.temp-col');
+          if (!cols || !cols.length) return;
+          const rect = tempsContainer.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2;
+
+          let closestIdx = 0;
+          let minDiff = Infinity;
+          cols.forEach((col, idx) => {
+            const cr = col.getBoundingClientRect();
+            const colCenter = cr.left + cr.width / 2;
+            const diff = Math.abs(centerX - colCenter);
+            if (diff < minDiff) {
+              minDiff = diff;
+              closestIdx = idx;
+            }
+          });
+
+          if (closestIdx !== activeDayIndex) {
+            activeDayIndex = closestIdx;
+            updateActiveDayUI(false);
+            updateHero();
+            updateAstronomicalTracker();
+          }
+        }, 90);
       }
 
       // Render Forecast Strip with DAY ON TOP, NIGHT DIRECTLY BENEATH
@@ -3235,6 +3368,10 @@
           const isNightActive = idx === activeDayIndex && selectedTimePhase === 'night';
 
           col.innerHTML = `
+            <div class="temp-col-day-header">
+              <span class="temp-col-day-title">${dayData.dayName}</span>
+              <span class="temp-col-day-date">${dayData.shortDate || ''}</span>
+            </div>
             <div class="temp-day-tier ${isDayActive ? 'active-tier' : ''}" role="button" tabindex="0">
               <span class="temp-tier-tag-day">Kunduz</span>
               <div class="temp-day-val-box">
@@ -3278,6 +3415,10 @@
             });
           }
 
+          col.addEventListener('click', () => {
+            selectDay(idx);
+          });
+
           tempsContainer.appendChild(col);
 
           const dayBtn = document.createElement('button');
@@ -3296,6 +3437,8 @@
         if (waveStrokeOuter) waveStrokeOuter.setAttribute('d', strokePath);
         if (waveStrokeMid) waveStrokeMid.setAttribute('d', strokePath);
         if (waveStrokeCore) waveStrokeCore.setAttribute('d', strokePath);
+
+        setupForecastScrollSync();
       }
 
       // =======================================================
