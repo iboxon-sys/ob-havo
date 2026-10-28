@@ -2069,7 +2069,7 @@ export async function fetchLiveMeteoWeather(lat: number, lng: number): Promise<L
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,surface_pressure,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,relative_humidity_2m_mean,wind_speed_10m_max&timezone=auto`;
     const res = await fetch(url);
     const text = await res.text();
-    if (!res.ok || !text || text.includes('Rate exceeded') || text.includes('error')) {
+    if (!res.ok || text.toLowerCase().includes('rate exceeded') || text.toLowerCase().includes('error')) {
       return null;
     }
     const data = JSON.parse(text);
