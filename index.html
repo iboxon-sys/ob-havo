@@ -794,6 +794,10 @@
         z-index: 10;
       }
 
+      .forecast-mobile-header {
+        display: none;
+      }
+
       .temps-row {
         display: flex;
         justify-content: space-between;
@@ -1726,13 +1730,14 @@
       }
 
       /* =======================================================
-         10-SECOND INTRO LOADING SCREEN (ZUHRIDDIN SYS PRODUCT TAQDIM ETADI)
+         PREMIUM 10-SECOND INTRO PRESENTATION SCREEN
+         ZUHRIDDIN SYS PRODUCT TAQDIM ETADI
          ======================================================= */
       .intro-loading-screen {
         position: fixed;
         inset: 0;
         z-index: 999999;
-        background: radial-gradient(circle at 50% 40%, rgba(14, 38, 62, 0.98) 0%, #030d16 65%, #01060b 100%);
+        background: #020813;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -1743,26 +1748,87 @@
 
       .intro-loading-screen.fade-out {
         opacity: 0;
-        transform: scale(1.08);
-        filter: blur(14px);
+        transform: scale(1.06);
+        filter: blur(16px);
         pointer-events: none;
       }
 
-      .intro-content-card {
+      /* Animated Cosmic Aura Mesh in Background */
+      .intro-bg-ambient {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .intro-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.45;
+        animation: introOrbFloat 14s ease-in-out infinite alternate;
+      }
+
+      .intro-orb.orb-1 {
+        width: 520px;
+        height: 520px;
+        top: -120px;
+        left: 15%;
+        background: radial-gradient(circle, rgba(0, 230, 118, 0.35) 0%, rgba(3, 169, 244, 0.15) 60%, transparent 80%);
+      }
+
+      .intro-orb.orb-2 {
+        width: 580px;
+        height: 580px;
+        bottom: -150px;
+        right: 10%;
+        background: radial-gradient(circle, rgba(255, 179, 0, 0.30) 0%, rgba(230, 81, 0, 0.12) 60%, transparent 80%);
+        animation-delay: -5s;
+        animation-duration: 18s;
+      }
+
+      .intro-orb.orb-3 {
+        width: 440px;
+        height: 440px;
+        top: 35%;
+        right: 25%;
+        background: radial-gradient(circle, rgba(33, 150, 243, 0.25) 0%, rgba(156, 39, 176, 0.12) 65%, transparent 80%);
+        animation-delay: -9s;
+        animation-duration: 16s;
+      }
+
+      @keyframes introOrbFloat {
+        0% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(40px, -30px) scale(1.12); }
+        100% { transform: translate(-30px, 40px) scale(0.92); }
+      }
+
+      .intro-stars-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      /* Luxury Center Glass Container */
+      .intro-container {
         position: relative;
         z-index: 10;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        max-width: min(92vw, 680px);
-        padding: clamp(24px, 5vw, 44px) clamp(20px, 6vw, 54px);
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(34px) saturate(140%);
-        -webkit-backdrop-filter: blur(34px) saturate(140%);
-        border: 1px solid rgba(255, 255, 255, 0.24);
+        width: 90%;
+        max-width: 620px;
+        padding: clamp(26px, 4.5vw, 40px) clamp(20px, 5vw, 44px);
+        background: linear-gradient(180deg, rgba(12, 28, 44, 0.72) 0%, rgba(4, 18, 28, 0.88) 100%);
+        backdrop-filter: blur(40px) saturate(140%);
+        -webkit-backdrop-filter: blur(40px) saturate(140%);
+        border: 1px solid rgba(255, 255, 255, 0.22);
         border-radius: 32px;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 50px rgba(0, 230, 118, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        box-shadow: 0 35px 90px rgba(0, 0, 0, 0.75), 0 0 50px rgba(0, 230, 118, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.35);
         animation: introCardEntrance 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
       }
 
@@ -1771,24 +1837,24 @@
         100% { opacity: 1; transform: translateY(0) scale(1); }
       }
 
-      .intro-badge {
+      /* Top Meta Info Pill */
+      .intro-meta-pill {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: rgba(4, 18, 27, 0.75);
-        border: 1px solid rgba(0, 230, 118, 0.5);
-        padding: 6px 16px;
+        background: rgba(4, 18, 27, 0.85);
+        border: 1px solid rgba(0, 230, 118, 0.45);
+        padding: 5px 16px;
         border-radius: 20px;
         font-size: 11.5px;
         font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
         color: #a5d6a7;
         margin-bottom: 22px;
-        box-shadow: 0 0 20px rgba(0, 230, 118, 0.25);
+        box-shadow: 0 0 20px rgba(0, 230, 118, 0.2);
+        letter-spacing: 0.5px;
       }
 
-      .intro-live-dot {
+      .intro-pulse-core {
         width: 8px;
         height: 8px;
         border-radius: 50%;
@@ -1802,30 +1868,50 @@
         50% { transform: scale(1.3); opacity: 0.5; }
       }
 
-      .intro-emblem-wrap {
+      .intro-meta-sep {
+        color: rgba(255, 255, 255, 0.3);
+      }
+
+      .intro-meta-version {
+        color: #81d4fa;
+        font-family: monospace;
+        font-size: 11px;
+      }
+
+      /* Majestic Animated Celestial Gyroscope Emblem */
+      .intro-emblem-hero {
         position: relative;
-        width: 86px;
-        height: 86px;
+        width: 104px;
+        height: 104px;
         margin-bottom: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
       }
 
-      .intro-emblem-ring {
+      .intro-orbit-ring {
         position: absolute;
-        inset: 0;
         border-radius: 50%;
-        border: 2px dashed rgba(255, 215, 64, 0.55);
-        animation: introRotateRing 12s linear infinite;
+        pointer-events: none;
       }
 
-      .intro-emblem-ring-2 {
-        position: absolute;
-        inset: -8px;
-        border-radius: 50%;
-        border: 1px solid rgba(0, 230, 118, 0.4);
-        animation: introRotateRingRev 8s linear infinite;
+      .intro-orbit-ring.ring-outer {
+        inset: -10px;
+        border: 1.5px dashed rgba(255, 215, 64, 0.45);
+        animation: introRotateRing 20s linear infinite;
+      }
+
+      .intro-orbit-ring.ring-mid {
+        inset: -2px;
+        border: 1.5px solid rgba(0, 230, 118, 0.45);
+        box-shadow: 0 0 15px rgba(0, 230, 118, 0.2);
+        animation: introRotateRingRev 12s linear infinite;
+      }
+
+      .intro-orbit-ring.ring-inner {
+        inset: 6px;
+        border: 1px dashed rgba(129, 212, 250, 0.4);
+        animation: introRotateRing 8s linear infinite;
       }
 
       @keyframes introRotateRing {
@@ -1837,17 +1923,60 @@
         to { transform: rotate(0deg); }
       }
 
-      .intro-emblem-center {
-        width: 60px;
-        height: 60px;
+      .intro-orbit-node {
+        position: absolute;
+        width: 22px;
+        height: 22px;
         border-radius: 50%;
-        background: radial-gradient(circle, #ffe082 0%, #ff9800 60%, #e65100 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 0 35px rgba(255, 179, 0, 0.7);
-        font-size: 30px;
-        animation: introPulseCenter 2.2s ease-in-out infinite alternate;
+        font-size: 13px;
+        filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+      }
+
+      .intro-orbit-node.node-sun {
+        top: -12px;
+        left: 50%;
+        margin-left: -11px;
+        animation: introOrbitalPath 8s linear infinite;
+      }
+
+      .intro-orbit-node.node-moon {
+        bottom: -10px;
+        left: 50%;
+        margin-left: -11px;
+        animation: introOrbitalPathRev 10s linear infinite;
+      }
+
+      .intro-orbit-node.node-cloud {
+        right: -10px;
+        top: 50%;
+        margin-top: -11px;
+        animation: introOrbitalPath 12s linear infinite;
+      }
+
+      @keyframes introOrbitalPath {
+        from { transform: rotate(0deg) translateX(46px) rotate(0deg); }
+        to { transform: rotate(360deg) translateX(46px) rotate(-360deg); }
+      }
+
+      @keyframes introOrbitalPathRev {
+        from { transform: rotate(360deg) translateX(42px) rotate(-360deg); }
+        to { transform: rotate(0deg) translateX(42px) rotate(0deg); }
+      }
+
+      .intro-emblem-core {
+        position: relative;
+        width: 66px;
+        height: 66px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #fff9c4 0%, #ffd54f 35%, #ff9800 70%, #e65100 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 35px rgba(255, 179, 0, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+        animation: introPulseCenter 2.4s ease-in-out infinite alternate;
       }
 
       @keyframes introPulseCenter {
@@ -1855,18 +1984,41 @@
         100% { transform: scale(1.06); box-shadow: 0 0 45px rgba(255, 215, 64, 0.85); }
       }
 
+      .intro-sun-rays-svg {
+        position: absolute;
+        inset: -14px;
+        width: 94px;
+        height: 94px;
+        animation: introRotateRing 16s linear infinite;
+      }
+
+      /* Typography Presentation */
+      .intro-brand-wrapper {
+        margin-bottom: 22px;
+      }
+
+      .intro-kicker {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 3.5px;
+        color: #81d4fa;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+        text-shadow: 0 0 10px rgba(129, 212, 250, 0.4);
+      }
+
       .intro-brand-title {
         font-family: 'Inter Tight', 'Inter', sans-serif;
-        font-size: clamp(24px, 5.5vw, 42px);
+        font-size: clamp(24px, 5.5vw, 38px);
         font-weight: 900;
-        letter-spacing: clamp(1px, 0.5vw, 2.5px);
+        letter-spacing: clamp(1px, 0.4vw, 2px);
         line-height: 1.15;
-        margin: 0 0 8px 0;
-        background: linear-gradient(135deg, #ffffff 0%, #fff9c4 40%, #ffd54f 75%, #ffb300 100%);
+        margin: 0;
+        background: linear-gradient(135deg, #ffffff 0%, #fff9c4 30%, #ffd54f 65%, #ffb300 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 4px 30px rgba(255, 213, 79, 0.35);
-        animation: introShimmerText 3s linear infinite;
+        text-shadow: 0 4px 25px rgba(255, 213, 79, 0.35);
+        animation: introShimmerText 3.2s linear infinite;
       }
 
       @keyframes introShimmerText {
@@ -1875,31 +2027,131 @@
       }
 
       .intro-brand-subtitle {
-        font-size: clamp(14px, 3vw, 19px);
-        font-weight: 700;
-        letter-spacing: clamp(4px, 1.2vw, 8px);
-        color: #81d4fa;
-        text-transform: uppercase;
-        margin: 0 0 26px 0;
-        text-shadow: 0 0 16px rgba(129, 212, 250, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 6px;
       }
 
-      .intro-progress-container {
+      .intro-line {
+        height: 1.5px;
+        width: 36px;
+        background: linear-gradient(90deg, transparent 0%, rgba(129, 212, 250, 0.75) 50%, transparent 100%);
+      }
+
+      .intro-subtitle-text {
+        font-size: clamp(13px, 2.5vw, 16px);
+        font-weight: 800;
+        letter-spacing: clamp(4px, 1.2vw, 8px);
+        color: #b3e5fc;
+        text-transform: uppercase;
+        text-shadow: 0 0 16px rgba(129, 212, 250, 0.65);
+      }
+
+      /* Progress Card Area */
+      .intro-progress-card {
         width: 100%;
-        max-width: 440px;
+        max-width: 480px;
+        background: rgba(0, 0, 0, 0.32);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 20px;
+        padding: 18px 20px 16px 20px;
+        margin-bottom: 20px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        margin-bottom: 18px;
+        gap: 14px;
+        box-sizing: border-box;
       }
 
+      /* Milestone Steps row */
+      .intro-steps-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .intro-step-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        transition: all 0.35s ease;
+      }
+
+      .step-num {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.12);
+        color: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .step-label {
+        font-size: 10.5px;
+        color: rgba(255, 255, 255, 0.55);
+        font-weight: 600;
+        white-space: nowrap;
+        transition: color 0.3s ease;
+      }
+
+      .step-connector {
+        flex: 1;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.14);
+        margin: 0 6px 16px 6px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .step-connector.filled::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, #00e676, #00b0ff);
+      }
+
+      .intro-step-item.active .step-num {
+        background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%);
+        color: #04121b;
+        font-weight: 800;
+        border-color: #00e676;
+        box-shadow: 0 0 12px rgba(0, 230, 118, 0.7);
+        transform: scale(1.12);
+      }
+
+      .intro-step-item.active .step-label {
+        color: #ffffff;
+        font-weight: 700;
+        text-shadow: 0 0 8px rgba(0, 230, 118, 0.5);
+      }
+
+      .intro-step-item.completed .step-num {
+        background: rgba(0, 230, 118, 0.25);
+        color: #00e676;
+        border-color: #00e676;
+      }
+
+      .intro-step-item.completed .step-label {
+        color: #a5d6a7;
+      }
+
+      /* Glowing Dual-Tone Progress Bar Track */
       .intro-progress-track {
         width: 100%;
         height: 10px;
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 6px;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        overflow: visible;
+        border: 1px solid rgba(255, 255, 255, 0.18);
         position: relative;
         box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.4);
       }
@@ -1908,46 +2160,119 @@
         width: 0%;
         height: 100%;
         background: linear-gradient(90deg, #00e676 0%, #00b0ff 50%, #ffd54f 100%);
-        border-radius: 6px;
-        box-shadow: 0 0 14px rgba(0, 230, 118, 0.7);
+        border-radius: 8px;
+        box-shadow: 0 0 14px rgba(0, 230, 118, 0.7), 0 0 24px rgba(0, 176, 255, 0.4);
         transition: width 0.12s linear;
+        position: relative;
       }
 
-      .intro-progress-info {
+      .intro-progress-head {
+        position: absolute;
+        right: -3px;
+        top: -3px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 0 14px #ffd54f, 0 0 24px #00e676;
+        animation: introPulseDot 1s infinite alternate;
+      }
+
+      /* Stats Area */
+      .intro-progress-stats {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 13px;
-        color: rgba(255, 255, 255, 0.85);
-        font-weight: 600;
+        gap: 12px;
+      }
+
+      .intro-status-box {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        text-align: left;
+        flex: 1;
+        min-width: 0;
+      }
+
+      .intro-status-icon {
+        font-size: 14px;
+        flex-shrink: 0;
+        animation: introPulseDot 1.2s infinite ease-in-out;
       }
 
       .intro-status-msg {
-        font-size: 13.5px;
+        font-size: 12.5px;
         color: #ffd54f;
         font-weight: 600;
-        min-height: 22px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         transition: opacity 0.2s ease;
+      }
+
+      .intro-counter-box {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex-shrink: 0;
+      }
+
+      .intro-percent-value {
+        font-size: 16px;
+        font-weight: 800;
+        color: #ffffff;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
+      }
+
+      .intro-countdown-sub {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.75);
+        font-weight: 600;
+        margin-top: 3px;
+      }
+
+      /* Action Skip Button */
+      .intro-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .intro-skip-btn {
         background: rgba(255, 255, 255, 0.12);
-        border: 1px solid rgba(255, 255, 255, 0.25);
-        color: rgba(255, 255, 255, 0.85);
-        padding: 8px 22px;
-        border-radius: 16px;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        backdrop-filter: blur(12px);
-        margin-top: 8px;
-      }
-      .intro-skip-btn:hover {
-        background: rgba(255, 255, 255, 0.25);
-        border-color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.28);
         color: #ffffff;
-        transform: translateY(-1px);
+        padding: 9px 24px;
+        border-radius: 18px;
+        font-size: 13.5px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        backdrop-filter: blur(14px);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+      }
+
+      .intro-skip-btn:hover {
+        background: rgba(255, 255, 255, 0.24);
+        border-color: rgba(255, 255, 255, 0.6);
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(0, 230, 118, 0.25);
+      }
+
+      .intro-skip-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease;
+      }
+
+      .intro-skip-btn:hover .intro-skip-icon {
+        transform: translateX(3px);
       }
 
       /* Mobile reflow <= 860px */
@@ -2034,13 +2359,18 @@
           left: 14px !important;
           width: auto !important;
           max-width: none !important;
+          max-height: calc(100vh - 150px) !important;
+          overflow-y: auto !important;
           z-index: 1000 !important;
         }
         .creator-watermark {
-          bottom: calc(76 * var(--u)) !important;
-          right: 14px !important;
-          font-size: 10px !important;
-          padding: 4px 10px !important;
+          position: relative !important;
+          bottom: auto !important;
+          right: auto !important;
+          margin: 16px auto 10px auto !important;
+          display: table !important;
+          font-size: 11px !important;
+          padding: 6px 14px !important;
         }
 
         /* Crucial: Flow Main View Panel in Normal Flex Document Flow Without Absolute Hover */
@@ -2129,55 +2459,204 @@
           right: auto !important;
           top: auto !important;
           bottom: auto !important;
-          padding: 0 calc(14 * var(--u)) !important;
-          margin-top: calc(16 * var(--u)) !important;
+          padding: 0 !important;
+          margin-top: calc(18 * var(--u)) !important;
           margin-bottom: calc(24 * var(--u)) !important;
           order: 4 !important;
           width: 100% !important;
           z-index: 10 !important;
         }
-        .temp-col-day-header {
+        .forecast-mobile-header {
           display: flex !important;
+          align-items: center !important;
+          justify-content: space-between !important;
+          padding: 0 16px 8px 16px !important;
+        }
+        .forecast-mobile-title {
+          font-size: 14px !important;
+          font-weight: 700 !important;
+          color: rgba(255, 255, 255, 0.95) !important;
+          display: flex !important;
+          align-items: center !important;
+          gap: 6px !important;
+        }
+        .forecast-mobile-hint {
+          font-size: 11.5px !important;
+          color: rgba(255, 255, 255, 0.7) !important;
+          font-weight: 500 !important;
         }
         .temps-row {
+          display: flex !important;
           overflow-x: auto !important;
-          gap: calc(8 * var(--u)) !important;
-          padding-bottom: calc(6 * var(--u)) !important;
+          gap: 12px !important;
+          padding: 4px 16px 8px 16px !important;
           scrollbar-width: none !important;
           -webkit-overflow-scrolling: touch !important;
           scroll-snap-type: x proximity !important;
           scroll-behavior: smooth !important;
-          padding-left: calc(6 * var(--u)) !important;
-          padding-right: calc(6 * var(--u)) !important;
         }
         .temps-row::-webkit-scrollbar {
           display: none !important;
         }
         .temp-col {
-          min-width: calc(86 * var(--u)) !important;
-          width: calc(86 * var(--u)) !important;
+          min-width: 120px !important;
+          width: 120px !important;
+          max-width: 120px !important;
+          flex: 0 0 120px !important;
+          padding: 12px 10px !important;
+          border-radius: 18px !important;
+          background: rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid rgba(255, 255, 255, 0.22) !important;
+          backdrop-filter: blur(14px) !important;
+          -webkit-backdrop-filter: blur(14px) !important;
+          scroll-snap-align: start !important;
+          box-sizing: border-box !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+        }
+        .temp-col.active {
+          background: rgba(255, 255, 255, 0.24) !important;
+          border-color: rgba(255, 213, 79, 0.85) !important;
+          box-shadow: 0 0 16px rgba(255, 213, 79, 0.35), 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+          transform: translateY(-2px) !important;
+        }
+        .temp-col-day-header {
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          width: 100% !important;
+          margin-bottom: 6px !important;
+          padding-bottom: 5px !important;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+        .temp-col-day-title {
+          font-size: 13.5px !important;
+          font-weight: 800 !important;
+          color: #ffffff !important;
+          white-space: nowrap !important;
+          line-height: 1.15 !important;
+        }
+        .temp-col-day-date {
+          font-size: 11px !important;
+          font-weight: 500 !important;
+          color: rgba(255, 255, 255, 0.8) !important;
+          margin-top: 1px !important;
+        }
+        .temp-day-tier,
+        .temp-night-tier {
+          width: 100% !important;
+          padding: 5px 4px !important;
+          border-radius: 12px !important;
+          display: flex !important;
+          flex-direction: column !important;
+          align-items: center !important;
+          box-sizing: border-box !important;
+        }
+        .temp-tier-tag-day,
+        .temp-tier-tag-night {
+          font-size: 9.5px !important;
+          font-weight: 800 !important;
+          letter-spacing: 0.6px !important;
+          margin-bottom: 2px !important;
+        }
+        .temp-day-val-box,
+        .temp-night-val-box {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 6px !important;
+          width: 100% !important;
+        }
+        .temp-val-day {
+          font-size: 20px !important;
+          font-weight: 700 !important;
+          line-height: 1 !important;
+        }
+        .temp-icon {
+          width: 18px !important;
+          height: 18px !important;
           flex-shrink: 0 !important;
-          scroll-snap-align: center !important;
+        }
+        .temp-val-night {
+          font-size: 15px !important;
+          font-weight: 700 !important;
+          line-height: 1 !important;
+        }
+        .temp-night-icon {
+          width: 14px !important;
+          height: 14px !important;
+          flex-shrink: 0 !important;
+        }
+        .temp-tier-divider {
+          width: 100% !important;
+          height: 1px !important;
+          background: rgba(255, 255, 255, 0.18) !important;
+          margin: 4px 0 !important;
+        }
+        .temp-card-metrics {
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          gap: 4px !important;
+          width: 100% !important;
+          margin-top: 6px !important;
+        }
+        .metric-micro-chip {
+          display: inline-flex !important;
+          align-items: center !important;
+          gap: 3px !important;
+          padding: 2.5px 6px !important;
+          border-radius: 7px !important;
+          font-size: 10px !important;
+          font-weight: 600 !important;
+          background: rgba(255, 255, 255, 0.14) !important;
+          border: 1px solid rgba(255, 255, 255, 0.2) !important;
+          white-space: nowrap !important;
+          flex-shrink: 0 !important;
+        }
+        .wave-svg {
+          height: 38px !important;
+          margin-top: 4px !important;
+          margin-bottom: 2px !important;
+          opacity: 0.75 !important;
         }
         .days-row {
+          display: flex !important;
           overflow-x: auto !important;
-          gap: calc(8 * var(--u)) !important;
-          padding-bottom: calc(4 * var(--u)) !important;
+          gap: 12px !important;
+          padding: 4px 16px 12px 16px !important;
+          margin-top: 0 !important;
           scrollbar-width: none !important;
           -webkit-overflow-scrolling: touch !important;
           scroll-snap-type: x proximity !important;
           scroll-behavior: smooth !important;
-          padding-left: calc(6 * var(--u)) !important;
-          padding-right: calc(6 * var(--u)) !important;
         }
         .days-row::-webkit-scrollbar {
           display: none !important;
         }
         .day-label {
-          min-width: calc(86 * var(--u)) !important;
-          width: calc(86 * var(--u)) !important;
-          flex-shrink: 0 !important;
-          scroll-snap-align: center !important;
+          min-width: 120px !important;
+          width: 120px !important;
+          max-width: 120px !important;
+          flex: 0 0 120px !important;
+          padding: 7px 8px !important;
+          border-radius: 14px !important;
+          background: rgba(255, 255, 255, 0.08) !important;
+          border: 1px solid rgba(255, 255, 255, 0.16) !important;
+          color: rgba(255, 255, 255, 0.8) !important;
+          font-size: 13px !important;
+          text-align: center !important;
+          scroll-snap-align: start !important;
+          box-sizing: border-box !important;
+          transition: all 0.2s ease !important;
+        }
+        .day-label.on {
+          background: rgba(255, 255, 255, 0.22) !important;
+          border-color: rgba(255, 213, 79, 0.85) !important;
+          color: #ffd54f !important;
+          font-weight: 700 !important;
+          box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
         }
         .big-temp {
           font-size: clamp(42px, 11vw, 58px) !important;
@@ -2308,36 +2787,119 @@
       </symbol>
     <!-- 10-Soniyalik Animatsion Kirish Sahifasi: ZUHRIDDIN SYS PRODUCT TAQDIM ETADI -->
     <div id="intro-loading-screen" class="intro-loading-screen" role="dialog" aria-modal="true" aria-label="Yuklanish sahifasi">
-      <div class="intro-content-card">
-        <div class="intro-badge">
-          <span class="intro-live-dot"></span>
+      <!-- Animated Background Ambient Light Orbs -->
+      <div class="intro-bg-ambient" aria-hidden="true">
+        <div class="intro-orb orb-1"></div>
+        <div class="intro-orb orb-2"></div>
+        <div class="intro-orb orb-3"></div>
+      </div>
+      <!-- Background Particle Canvas for Shooting Stars and Sparkles -->
+      <canvas id="intro-stars-canvas" class="intro-stars-canvas" aria-hidden="true"></canvas>
+
+      <div class="intro-container">
+        <!-- Top Status Bar -->
+        <div class="intro-meta-pill">
+          <span class="intro-pulse-core"></span>
           <span>PLATFORMA BETA VERSIYADA ISHLAMOQDA</span>
+          <span class="intro-meta-sep">•</span>
+          <span class="intro-meta-version">v2.4 Live</span>
         </div>
 
-        <div class="intro-emblem-wrap">
-          <div class="intro-emblem-ring"></div>
-          <div class="intro-emblem-ring-2"></div>
-          <div class="intro-emblem-center">⛅</div>
+        <!-- Majestic Animated Celestial Gyroscope Emblem -->
+        <div class="intro-emblem-hero" aria-hidden="true">
+          <div class="intro-orbit-ring ring-outer"></div>
+          <div class="intro-orbit-ring ring-mid"></div>
+          <div class="intro-orbit-ring ring-inner"></div>
+          
+          <div class="intro-orbit-node node-sun">☀️</div>
+          <div class="intro-orbit-node node-moon">🌙</div>
+          <div class="intro-orbit-node node-cloud">⛅</div>
+
+          <svg class="intro-sun-rays-svg" viewBox="0 0 100 100">
+            <g stroke="rgba(255, 215, 64, 0.45)" stroke-width="2" stroke-linecap="round">
+              <line x1="50" y1="6" x2="50" y2="14" />
+              <line x1="50" y1="86" x2="50" y2="94" />
+              <line x1="6" y1="50" x2="14" y2="50" />
+              <line x1="86" y1="50" x2="94" y2="50" />
+              <line x1="19" y1="19" x2="25" y2="25" />
+              <line x1="75" y1="75" x2="81" y2="81" />
+              <line x1="19" y1="81" x2="25" y2="75" />
+              <line x1="75" y1="25" x2="81" y2="19" />
+            </g>
+          </svg>
+
+          <div class="intro-emblem-core">
+            <svg viewBox="0 0 24 24" style="width:34px; height:34px; fill:#fff;">
+              <circle cx="12" cy="12" r="5" fill="#fff" />
+              <path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12" stroke="#fff" stroke-width="2.5" stroke-linecap="round" />
+            </svg>
+          </div>
         </div>
 
-        <h1 class="intro-brand-title">ZUHRIDDIN SYS PRODUCT</h1>
-        <p class="intro-brand-subtitle">TAQDIM ETADI</p>
+        <!-- Typography Presentation -->
+        <div class="intro-brand-wrapper">
+          <div class="intro-kicker">METEOROLOGIYA PLATFORMASI</div>
+          <h1 class="intro-brand-title">ZUHRIDDIN SYS PRODUCT</h1>
+          <div class="intro-brand-subtitle">
+            <span class="intro-line"></span>
+            <span class="intro-subtitle-text">TAQDIM ETADI</span>
+            <span class="intro-line"></span>
+          </div>
+        </div>
 
-        <div class="intro-progress-container">
+        <!-- Dynamic Live Progress Area -->
+        <div class="intro-progress-card">
+          <!-- Milestone Steps Indicator -->
+          <div class="intro-steps-row">
+            <div class="intro-step-item active" id="step-node-1">
+              <span class="step-num">1</span>
+              <span class="step-label">Atmosfera</span>
+            </div>
+            <div class="step-connector" id="step-conn-1"></div>
+            <div class="intro-step-item" id="step-node-2">
+              <span class="step-num">2</span>
+              <span class="step-label">Sun'iy yo'ldosh</span>
+            </div>
+            <div class="step-connector" id="step-conn-2"></div>
+            <div class="intro-step-item" id="step-node-3">
+              <span class="step-num">3</span>
+              <span class="step-label">7 kunlik</span>
+            </div>
+            <div class="step-connector" id="step-conn-3"></div>
+            <div class="intro-step-item" id="step-node-4">
+              <span class="step-num">4</span>
+              <span class="step-label">Tayyor</span>
+            </div>
+          </div>
+
+          <!-- Progress Bar & Percentage Track -->
           <div class="intro-progress-track">
-            <div id="intro-progress-bar" class="intro-progress-fill"></div>
+            <div id="intro-progress-bar" class="intro-progress-fill">
+              <span class="intro-progress-head"></span>
+            </div>
           </div>
-          <div class="intro-progress-info">
-            <span id="intro-countdown-text">Boshlanishiga: 10 soniya</span>
-            <span id="intro-percent-text">0%</span>
+
+          <div class="intro-progress-stats">
+            <div class="intro-status-box">
+              <span class="intro-status-icon">⚡</span>
+              <span id="intro-status-msg" class="intro-status-msg">Jonli atmosfera va sun'iy yo'ldosh ma'lumotlari ulanmoqda...</span>
+            </div>
+            <div class="intro-counter-box">
+              <span id="intro-percent-text" class="intro-percent-value">0%</span>
+              <span id="intro-countdown-text" class="intro-countdown-sub">10 soniya</span>
+            </div>
           </div>
         </div>
 
-        <div id="intro-status-msg" class="intro-status-msg">Jonli atmosfera va sun'iy yo'ldosh ma'lumotlari tayyorlanmoqda...</div>
-
-        <button type="button" id="intro-skip-btn" class="intro-skip-btn" title="Kutmasdan to'g'ridan-to'g'ri tizimga o'tish">
-          Tezkor o'tish &rarr;
-        </button>
+        <!-- Action Bar -->
+        <div class="intro-actions">
+          <button type="button" id="intro-skip-btn" class="intro-skip-btn" title="Kutmasdan to'g'ridan-to'g'ri tizimga o'tish (Enter)">
+            <span>Tizimga kirish</span>
+            <svg class="intro-skip-icon" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -2710,7 +3272,14 @@
       </div>
 
       <!-- 4) Forecast Strip: Daytime on Top, Nighttime Directly Beneath -->
-      <section class="forecast" aria-label="6 kunlik ob-havo prognozi (Kunduzgi va Kechki)">
+      <section class="forecast" aria-label="7 kunlik ob-havo prognozi (Kunduzgi va Kechki)">
+        <div class="forecast-mobile-header" aria-hidden="true">
+          <span class="forecast-mobile-title">
+            <svg style="width:16px; height:16px; fill:#ffd54f;"><use href="#i-cal" /></svg>
+            <span>7 kunlik ob-havo bashorati</span>
+          </span>
+          <span class="forecast-mobile-hint">Kunlar bo'yicha suring ↔</span>
+        </div>
         <div class="temps-row" id="temps-container">
           <!-- Populated dynamically: Day on top, Night beneath -->
         </div>
@@ -4996,20 +5565,130 @@
       const introPercentText = document.getElementById('intro-percent-text');
       const introStatusMsg = document.getElementById('intro-status-msg');
       const introSkipBtn = document.getElementById('intro-skip-btn');
+      const introStarsCanvas = document.getElementById('intro-stars-canvas');
 
       if (introScreen) {
         const TOTAL_DURATION_MS = 10000;
-        const INTERVAL_MS = 80;
+        const INTERVAL_MS = 60;
         const startTime = Date.now();
         let introDismissed = false;
 
+        // Interactive background starfield for intro screen
+        if (introStarsCanvas) {
+          const sCtx = introStarsCanvas.getContext('2d');
+          let sWidth = (introStarsCanvas.width = window.innerWidth);
+          let sHeight = (introStarsCanvas.height = window.innerHeight);
+
+          const resizeStars = () => {
+            sWidth = introStarsCanvas.width = window.innerWidth;
+            sHeight = introStarsCanvas.height = window.innerHeight;
+          };
+          window.addEventListener('resize', resizeStars);
+
+          const stars = Array.from({ length: 65 }, () => ({
+            x: Math.random() * sWidth,
+            y: Math.random() * sHeight,
+            radius: Math.random() * 1.5 + 0.5,
+            alpha: Math.random(),
+            speed: Math.random() * 0.03 + 0.01,
+            color: Math.random() > 0.4 ? '#ffffff' : (Math.random() > 0.5 ? '#81d4fa' : '#ffd54f')
+          }));
+
+          let introMeteors = [];
+          function spawnIntroMeteor() {
+            if (introDismissed) return;
+            introMeteors.push({
+              x: Math.random() * sWidth * 0.8,
+              y: Math.random() * (sHeight * 0.3),
+              len: Math.random() * 80 + 40,
+              speed: Math.random() * 9 + 7,
+              angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+              opacity: 1
+            });
+            setTimeout(spawnIntroMeteor, Math.random() * 2500 + 1200);
+          }
+          setTimeout(spawnIntroMeteor, 800);
+
+          function renderIntroStars() {
+            if (introDismissed) return;
+            sCtx.clearRect(0, 0, sWidth, sHeight);
+
+            stars.forEach(s => {
+              s.alpha += s.speed;
+              const a = 0.2 + 0.6 * (Math.sin(s.alpha) * 0.5 + 0.5);
+              sCtx.fillStyle = s.color;
+              sCtx.globalAlpha = a;
+              sCtx.beginPath();
+              sCtx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+              sCtx.fill();
+            });
+
+            for (let i = introMeteors.length - 1; i >= 0; i--) {
+              const m = introMeteors[i];
+              const ex = m.x - Math.cos(m.angle) * m.len;
+              const ey = m.y - Math.sin(m.angle) * m.len;
+              const grad = sCtx.createLinearGradient(m.x, m.y, ex, ey);
+              grad.addColorStop(0, `rgba(255, 255, 255, ${m.opacity})`);
+              grad.addColorStop(1, 'transparent');
+
+              sCtx.strokeStyle = grad;
+              sCtx.lineWidth = 1.8;
+              sCtx.beginPath();
+              sCtx.moveTo(m.x, m.y);
+              sCtx.lineTo(ex, ey);
+              sCtx.stroke();
+
+              m.x += Math.cos(m.angle) * m.speed;
+              m.y += Math.sin(m.angle) * m.speed;
+              m.opacity -= 0.025;
+              if (m.opacity <= 0 || m.x > sWidth || m.y > sHeight) {
+                introMeteors.splice(i, 1);
+              }
+            }
+            sCtx.globalAlpha = 1;
+
+            requestAnimationFrame(renderIntroStars);
+          }
+          requestAnimationFrame(renderIntroStars);
+        }
+
         const statusPhases = [
-          { until: 0.20, msg: "Jonli atmosfera va sun'iy yo'ldosh ma'lumotlari ulanmoqda..." },
-          { until: 0.45, msg: "7 kunlik ob-havo prognozlari va harorat egri chizig'i shakllantirilmoqda..." },
-          { until: 0.70, msg: "Quyosh va Oy 1:1 astronomik orbitasi kalibrlanmoqda..." },
-          { until: 0.90, msg: "O'zbekiston hududlari meteo-ma'lumotlari sinxronlanmoqda..." },
+          { until: 0.22, msg: "Jonli atmosfera va sun'iy yo'ldosh ma'lumotlari ulanmoqda..." },
+          { until: 0.50, msg: "7 kunlik ob-havo prognozlari va harorat egri chizig'i shakllantirilmoqda..." },
+          { until: 0.75, msg: "Quyosh va Oy 1:1 astronomik orbitasi kalibrlanmoqda..." },
+          { until: 0.92, msg: "O'zbekiston hududlari meteo-ma'lumotlari sinxronlanmoqda..." },
           { until: 1.00, msg: "Tizim to'liq tayyor! Xush kelibsiz!" }
         ];
+
+        // Step indicator nodes
+        const step1 = document.getElementById('step-node-1');
+        const step2 = document.getElementById('step-node-2');
+        const step3 = document.getElementById('step-node-3');
+        const step4 = document.getElementById('step-node-4');
+        const conn1 = document.getElementById('step-conn-1');
+        const conn2 = document.getElementById('step-conn-2');
+        const conn3 = document.getElementById('step-conn-3');
+
+        function updateMilestoneSteps(progress) {
+          if (progress >= 0.25) {
+            if (step1) { step1.classList.remove('active'); step1.classList.add('completed'); }
+            if (conn1) conn1.classList.add('filled');
+            if (step2) step2.classList.add('active');
+          }
+          if (progress >= 0.55) {
+            if (step2) { step2.classList.remove('active'); step2.classList.add('completed'); }
+            if (conn2) conn2.classList.add('filled');
+            if (step3) step3.classList.add('active');
+          }
+          if (progress >= 0.85) {
+            if (step3) { step3.classList.remove('active'); step3.classList.add('completed'); }
+            if (conn3) conn3.classList.add('filled');
+            if (step4) step4.classList.add('active');
+          }
+          if (progress >= 1.00) {
+            if (step4) { step4.classList.remove('active'); step4.classList.add('completed'); }
+          }
+        }
 
         function dismissIntro() {
           if (introDismissed) return;
@@ -5019,7 +5698,7 @@
             setTimeout(() => {
               introScreen.style.display = 'none';
               introScreen.remove();
-            }, 700);
+            }, 650);
           }
         }
 
@@ -5041,8 +5720,10 @@
             introPercentText.textContent = `${percent}%`;
           }
           if (introCountdownText) {
-            introCountdownText.textContent = `Boshlanishiga: ${remainingSecs} soniya`;
+            introCountdownText.textContent = `${remainingSecs} soniya`;
           }
+
+          updateMilestoneSteps(progress);
 
           const curPhase = statusPhases.find(p => progress <= p.until) || statusPhases[statusPhases.length - 1];
           if (introStatusMsg && introStatusMsg.textContent !== curPhase.msg) {
@@ -5061,6 +5742,18 @@
             dismissIntro();
           });
         }
+
+        window.addEventListener('keydown', function introKeyHandler(e) {
+          if (introDismissed) {
+            window.removeEventListener('keydown', introKeyHandler);
+            return;
+          }
+          if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') {
+            e.preventDefault();
+            clearInterval(introTimer);
+            dismissIntro();
+          }
+        });
       }
     </script>
   </body>
